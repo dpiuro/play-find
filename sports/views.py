@@ -1,4 +1,6 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from .models import Training, Sport, Field
@@ -71,12 +73,14 @@ from .models import Training
 @login_required
 def toggle_training_subscription(request, pk):
     training = get_object_or_404(Training, pk=pk)
-    user = request.user
 
-    # Перевіряємо, чи користувач вже в списку
-    if training.participants.filter(id=user.id).exists():
-        training.participants.remove(user)  # Відписуємо користувача
+    # Отримуємо об'єкт User безпосередньо
+    user = User.objects.get(pk=request.user.pk)
+
+    # Перевіряємо, чи користувач вже є учасником тренування
+    if user in training.participants.all():
+        training.participants.remove(user)  # Відписати користувача
     else:
-        training.participants.add(user)  # Підписуємо користувача
+        training.participants.add(user)  # Підписати користувача
 
     return redirect('training-list')

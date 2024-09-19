@@ -1,24 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Trainings List</h1>
-<ul>
+  <h2>Training List</h2>
+
+  <ul>
     {% for training in trainings %}
-    <li>
-        {{ training.sport.name }} at {{ training.field.name }} on {{ training.date }} at {{ training.time }}
+      <li>
+        {{ training.sport.name }} at {{ training.field.name }} on {{ training.datetime }}
+        <!-- Кнопки для операцій CRUD -->
         <a href="{% url 'training-update' training.pk %}">Edit</a> |
         <a href="{% url 'training-delete' training.pk %}">Delete</a> |
         <a href="{% url 'training-subscribe' training.pk %}">
-            {% if user in training.participants.all %}
-                Unsubscribe
-            {% else %}
-                Subscribe
-            {% endif %}
+          {% if user in training.participants.all %}
+            Unsubscribe
+          {% else %}
+            Subscribe
+          {% endif %}
         </a>
-    </li>
+      </li>
     {% empty %}
-    <li>No trainings available.</li>
+      <li>No trainings available.</li>
     {% endfor %}
-</ul>
-<a href="{% url 'training-create' %}">Create new Training</a>
+  </ul>
+
+  <!-- Кнопка для створення нового тренування -->
+  <a href="{% url 'training-create' %}" class="btn btn-primary">Create New Training</a>
 {% endblock %}

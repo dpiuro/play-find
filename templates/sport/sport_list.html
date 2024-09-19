@@ -1,16 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Trainings List</h1>
-<ul>
-    {% for training in trainings %}
-    <li>{{ training.sport.name }} at {{ training.field.name }} on {{ training.date }} at {{ training.time }}
-        <a href="{% url 'training-update' training.pk %}">Edit</a> |
-        <a href="{% url 'training-delete' training.pk %}">Delete</a>
-    </li>
+  <h2>Sports List</h2>
+
+  <ul>
+    {% for sport in sports %}
+      <li>{{ sport.name }}</li>
     {% empty %}
-    <li>No trainings available.</li>
+      <li>No sports available.</li>
     {% endfor %}
-</ul>
-<a href="{% url 'training-create' %}">Create new Training</a>
+  </ul>
+
+  <a href="{% url 'home' %}">Back to home</a>
 {% endblock %}

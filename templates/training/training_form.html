@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Edit Training</h1>
-<form method="post">
+  <h2>{% if object %}Update{% else %}Create{% endif %} Training</h2>
+
+  <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Save changes</button>
-</form>
-<a href="{% url 'training-list' %}">Back to Training List</a>
+    <button type="submit">{% if object %}Update{% else %}Create{% endif %}</button>
+  </form>
+
+  <a href="{% url 'training-list' %}">Back to Training List</a>
 {% endblock %}

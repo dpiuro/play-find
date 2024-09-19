@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Delete Training</h1>
-<p>Are you sure you want to delete "{{ object.sport.name }} at {{ object.field.name }}"?</p>
-<form method="post">
+  <h2>Confirm Deletion</h2>
+
+  <p>Are you sure you want to delete the training "{{ object }}"?</p>
+
+  <form method="post">
     {% csrf_token %}
     <button type="submit">Yes, delete</button>
-    <a href="{% url 'training-list' %}">Cancel</a>
-</form>
+    <a href="{% url 'training-list' %}">No, go back</a>
+  </form>
 {% endblock %}
