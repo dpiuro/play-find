@@ -27,8 +27,13 @@ class TrainingCreateView(generic.CreateView):
     success_url = "/"
 
     def form_valid(self, form):
+        # Призначаємо поточного користувача як творця
         form.instance.creator = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+
+        # Додаємо творця до учасників
+        self.object.participants.add(self.request.user)
+        return response
 
 
 class TrainingUpdateView(generic.UpdateView):
