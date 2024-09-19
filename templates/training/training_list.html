@@ -1,18 +1,24 @@
 {% extends 'base.html' %}
 
-{% block title %}Available Trainings{% endblock %}
-
 {% block content %}
-<h1>Available Trainings</h1>
-<a href="{% url 'training-create' %}" class="btn btn-primary mb-3">Create New Training</a>
-<ul class="list-group">
+<h1>Trainings List</h1>
+<ul>
     {% for training in trainings %}
-    <li class="list-group-item">
-        {{ training.sport.name }} at {{ training.field.name }} on {{ training.datetime }} <br>
-        <a href="{% url 'training-update' training.pk %}" class="btn btn-sm btn-warning">Edit</a>
-        <a href="{% url 'training-delete' training.pk %}" class="btn btn-sm btn-danger">Delete</a>
-        <a href="{% url 'training-subscribe' training.pk %}" class="btn btn-sm btn-success">Subscribe</a>
+    <li>
+        {{ training.sport.name }} at {{ training.field.name }} on {{ training.date }} at {{ training.time }}
+        <a href="{% url 'training-update' training.pk %}">Edit</a> |
+        <a href="{% url 'training-delete' training.pk %}">Delete</a> |
+        <a href="{% url 'training-subscribe' training.pk %}">
+            {% if user in training.participants.all %}
+                Unsubscribe
+            {% else %}
+                Subscribe
+            {% endif %}
+        </a>
     </li>
+    {% empty %}
+    <li>No trainings available.</li>
     {% endfor %}
 </ul>
+<a href="{% url 'training-create' %}">Create new Training</a>
 {% endblock %}

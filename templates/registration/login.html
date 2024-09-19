@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Edit Training</h1>
+<h2>Login</h2>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Save changes</button>
+    <button type="submit">Login</button>
 </form>
-<a href="{% url 'training-list' %}">Back to Training List</a>
 {% endblock %}
