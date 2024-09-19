@@ -1,13 +1,16 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic import View
 
+from .forms import CustomUserCreationForm
 from .models import Training, Sport, Field
 
 
@@ -115,3 +118,26 @@ def toggle_training_subscription(request, pk):
         training.participants.add(user)  # Підписатися
 
     return redirect('training-list')
+
+def search_trainings(request):
+    query = request.GET.get('q')
+    trainings = Training.objects.filter(Q(sport__name__icontains=query))
+    return render(request, 'training/training_search_results.html', {'trainings': trainings})
+
+
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+        else:
+            form - CustomUserCreationForm()
+        return render(request, 'registration/register.html', {'form': form})
+
+
+class CustomUserCreationView(generic.CreateView):
+    form_class = CustomUserCreationForm
+    template_name = 'registration/signup.html'
+    success_url = reverse_lazy('login')
+
