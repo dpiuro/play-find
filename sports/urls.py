@@ -1,6 +1,6 @@
 from django.urls import path, include
 from sports import views
-from sports.views import ToggleSubscriptionView
+from sports.views import toggle_training_subscription
 
 urlpatterns = [
     path('', views.home, name='home'),  # Домашня сторінка
@@ -8,7 +8,7 @@ urlpatterns = [
     path('trainings/create/', views.TrainingCreateView.as_view(), name='training-create'),  # Створити тренування
     path('trainings/<int:pk>/update/', views.TrainingUpdateView.as_view(), name='training-update'),  # Оновити тренування
     path('trainings/<int:pk>/delete/', views.TrainingDeleteView.as_view(), name='training-delete'),  # Видалити тренування
-    path('<int:pk>/subscribe/', ToggleSubscriptionView.as_view(), name='training-subscribe'), # Підписка на тренування
+    path('trainings/<int:pk>/subscribe/', toggle_training_subscription, name='training-subscribe'), # Підписка на тренування
 
     path('fields/', views.FieldListView.as_view(), name='field-list'),  # Список полів
     path('fields/create/', views.FieldCreateView.as_view(), name='field-create'),  # Створити поле

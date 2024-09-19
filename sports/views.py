@@ -27,13 +27,7 @@ class TrainingCreateView(generic.CreateView):
     success_url = "/"
 
     def form_valid(self, form):
-        # Зберігаємо форму, але не коммітимо
-        self.object = form.save(commit=False)
-        self.object.save()
-
-        # Додаємо користувача, який створив подію, до учасників
-        self.object.participants.add(self.request.user)
-
+        form.instance.creator = self.request.user
         return super().form_valid(form)
 
 
@@ -48,23 +42,6 @@ class TrainingDeleteView(generic.DeleteView):
     template_name = "training/training_confirm_delete.html"
     success_url = "/"
 
-
-class ToggleSubscriptionView(LoginRequiredMixin, View):
-    def post(self, request, pk, *args, **kwargs):
-        # Отримуємо тренування за допомогою його primary key (pk)
-        training = get_object_or_404(Training, pk=pk)
-
-        # Отримуємо користувача з request
-        user = request.user
-
-        # Перевіряємо, чи користувач вже підписаний
-        if user in training.participants.all():
-            training.participants.remove(user)  # Видаляємо користувача
-        else:
-            training.participants.add(user)  # Додаємо користувача
-
-        # Перенаправляємо на список тренувань після виконання дії
-        return redirect('training-list')
 
 class FieldListView(generic.ListView):
     model = Field
@@ -119,3 +96,17 @@ class SportDeleteView(generic.DeleteView):
 
 def home(request):
     return render(request, 'home.html')
+
+
+
+@login_required
+def toggle_training_subscription(request, pk):
+    training = get_object_or_404(Training, pk=pk)
+    user = request.user
+
+    if user in training.participants.all():
+        training.participants.remove(user)  # Відписатися
+    else:
+        training.participants.add(user)  # Підписатися
+
+    return redirect('training-list')
