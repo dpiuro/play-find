@@ -17,7 +17,7 @@ class TrainingCreateView(generic.CreateView):
 
 class TrainingUpdateView(generic.UpdateView):
     model = Training
-    fields = ['field', 'organizer', 'date', 'time']
+    fields = ['field', 'sport', 'datetime']
     template_name = "training/training_form.html"
     success_url = "/"
 
@@ -34,6 +34,26 @@ class FieldListView(generic.ListView):
     context_object_name = "fields"
 
 
+class FieldCreateView(generic.CreateView):
+    model = Field
+    fields = ['name', 'location', 'sports']
+    template_name = "field/field_form.html"
+    success_url = "/fields/"
+
+
+class FieldUpdateView(generic.UpdateView):
+    model = Field
+    fields = ['name', 'location', 'sports']
+    template_name = "field/field_form.html"
+    success_url = "/fields/"
+
+
+class FieldDeleteView(generic.DeleteView):
+    model = Field
+    template_name = "field/field_confirm_delete.html"
+    success_url = "/fields/"
+
+
 class SportListView(generic.ListView):
     model = Sport
     template_name = "sport/sport_list.html"
@@ -44,11 +64,19 @@ def home(request):
     return render(request, 'home.html')
 
 
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Training
+
 @login_required
 def toggle_training_subscription(request, pk):
     training = get_object_or_404(Training, pk=pk)
-    if request.user in training.participants.all():
-        training.participants.remove(request.user)
+    user = request.user
+
+    # Перевіряємо, чи користувач вже в списку
+    if training.participants.filter(id=user.id).exists():
+        training.participants.remove(user)  # Відписуємо користувача
     else:
-        training.participants.add(request.user)
+        training.participants.add(user)  # Підписуємо користувача
+
     return redirect('training-list')

@@ -11,5 +11,8 @@ urlpatterns = [
     path('trainings/<int:pk>/delete/', views.TrainingDeleteView.as_view(), name='training-delete'),
     path('trainings/<int:pk>/subscribe/', views.toggle_training_subscription, name='training-subscribe'),
     path('fields/', views.FieldListView.as_view(), name='field-list'),
+    path('fields/create/', views.FieldCreateView.as_view(), name='field-create'),
+    path('fields/<int:pk>/update/', views.FieldUpdateView.as_view(), name='field-update'),
+    path('fields/<int:pk>/delete/', views.FieldDeleteView.as_view(), name='field-delete'),
     path('sport/', views.SportListView.as_view(), name='sport-list'),
 ]

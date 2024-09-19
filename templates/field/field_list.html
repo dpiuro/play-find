@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
 
-{% block title %}Fields{% endblock %}
-
 {% block content %}
-<h1>Fields</h1>
+<h1>Field List</h1>
 <ul>
     {% for field in fields %}
-    <li>{{ field.name }} - {{ field.location }}</li>
+    <li>{{ field.name }} – {{ field.location }}
+        <a href="{% url 'field-update' field.pk %}">Edit</a> |
+        <a href="{% url 'field-delete' field.pk %}">Delete</a>
+    </li>
+    {% empty %}
+    <li>No fields available.</li>
     {% endfor %}
 </ul>
+<a href="{% url 'field-create' %}">Create new Field</a>
 {% endblock %}
