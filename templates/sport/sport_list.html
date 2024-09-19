@@ -1,15 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Sports List</h2>
-
+  <h2>Sport List</h2>
   <ul>
     {% for sport in sports %}
-      <li>{{ sport.name }}</li>
+      <li>
+        {{ sport.name }}
+        <a href="{% url 'sport-update' sport.pk %}">Edit</a> |
+        <a href="{% url 'sport-delete' sport.pk %}">Delete</a>
+      </li>
     {% empty %}
       <li>No sports available.</li>
     {% endfor %}
   </ul>
 
-  <a href="{% url 'home' %}">Back to home</a>
+  <a href="{% url 'sport-create' %}" class="btn btn-primary">Create New Sport</a>
 {% endblock %}

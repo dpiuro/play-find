@@ -7,16 +7,30 @@
     {% for training in trainings %}
       <li>
         {{ training.sport.name }} at {{ training.field.name }} on {{ training.datetime }}
-        <!-- Кнопки для операцій CRUD -->
         <a href="{% url 'training-update' training.pk %}">Edit</a> |
         <a href="{% url 'training-delete' training.pk %}">Delete</a> |
-        <a href="{% url 'training-subscribe' training.pk %}">
-          {% if user in training.participants.all %}
-            Unsubscribe
-          {% else %}
-            Subscribe
-          {% endif %}
-        </a>
+
+        <!-- Форма для підписки/відписки на тренування -->
+        <form method="post" action="{% url 'training-subscribe' training.pk %}" style="display: inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-link">
+            {% if user in training.participants.all %}
+              Unsubscribe
+            {% else %}
+              Subscribe
+            {% endif %}
+          </button>
+        </form>
+
+        <!-- Виведення списку учасників -->
+        <ul>
+          <strong>Participants:</strong>
+          {% for participant in training.participants.all %}
+            <li>{{ participant.username }}</li>
+          {% empty %}
+            <li>No participants yet.</li>
+          {% endfor %}
+        </ul>
       </li>
     {% empty %}
       <li>No trainings available.</li>
