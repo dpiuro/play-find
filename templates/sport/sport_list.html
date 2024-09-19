@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Sports{% endblock %}
+
+{% block content %}
+<h1>Sports</h1>
+<ul class="list-group">
+    {% for sport in sports %}
+    <li class="list-group-item">{{ sport.name }}</li>
+    {% empty %}
+    <li class="list-group-item">No sports available</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Fields{% endblock %}
+
+{% block content %}
+<h1>Fields</h1>
+<ul>
+    {% for field in fields %}
+    <li>{{ field.name }} - {{ field.location }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

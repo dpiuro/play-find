@@ -1,41 +1,33 @@
-from audioop import reverse
-
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
-from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-
-from sports.models import Training
+from django.shortcuts import render
+from django.views import generic
+from .models import Training, Sport, Field
 
 
-class TrainingListView(ListView):
+class TrainingListView(generic.ListView):
     model = Training
-    template_name = "training-list.html"
-    context_object_name = "training-list"
-    paginate_by = 5
+    template_name = "training/training_list.html"
+    context_object_name = "trainings"
 
-
-class TrainingCreateView(CreateView):
+class TrainingCreateView(generic.CreateView):
     model = Training
-    fields = ["field", "sport", "date", "time", "participants"],
-    template_name = "training-form.html"
-    success_url = reverse_lazy("training_list")
+    fields = ['field', 'organizer', 'date', 'time']
+    template_name = "training/training_form.html"
+    success_url = "/"
 
 
-class TrainingUpdateView(UpdateView):
-    model = Training
-    fields = ["field", "sport", "date", "time", "participants"]
-    template_name = "training-form.html"
-    success_url = reverse_lazy("training-list")
+class FieldListView(generic.ListView):
+    model = Field
+    template_name = "field/field_list.html"
+    context_object_name = "fields"
 
 
-class TrainingDeleteView(DeleteView):
-    model = Training
-    template_name = "training_confirm_delete.html"
-    success_url = reverse_lazy("training-list")
+class SportListView(generic.ListView):
+    model = Sport
+    template_name = "sport/sport_list.html"
+    context_object_name = "sports"
+    queryset = Sport.objects.all()
+
+def home(request):
+    return render(request, 'home.html')
 
 
-def subscribe_to_training(request, pk) -> HttpResponse:
-    training = get_object_or_404(Training, pk=pk)
-    training.participants.add(request.user)
-    return HttpResponseRedirect(reverse_lazy("training-list"))

@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255, unique=True)),
                 ('location', models.CharField(max_length=255)),
-                ('sports', models.ManyToManyField(related_name='fields', to='sports.sport')),
+                ('sport', models.ManyToManyField(related_name='fields', to='sport.sport')),
             ],
         ),
         migrations.CreateModel(
@@ -64,9 +64,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('datetime', models.DateTimeField()),
-                ('field', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='field_trainings', to='sports.field')),
-                ('sport', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sport_trainings', to='sports.sport')),
-                ('participants', models.ManyToManyField(blank=True, related_name='participant_trainings', to='sports.user')),
+                ('field', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='field_trainings', to='sport.field')),
+                ('sport', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='sport_trainings', to='sport.sport')),
+                ('participants', models.ManyToManyField(blank=True, related_name='participant_trainings', to='sport.user')),
             ],
         ),
     ]
