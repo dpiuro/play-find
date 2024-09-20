@@ -93,14 +93,12 @@ class SportListView(generic.ListView):
     template_name = "sport/sport_list.html"
     context_object_name = "sports"
 
-# Створення виду спорту
 class SportCreateView(generic.CreateView):
     model = Sport
     fields = ['name']
     template_name = "sport/sport_form.html"
     success_url = reverse_lazy('sport-list')
 
-# Оновлення виду спорту
 class SportUpdateView(generic.UpdateView):
     model = Sport
     fields = ['name']
