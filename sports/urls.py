@@ -1,9 +1,9 @@
 from django.urls import path, include
 from sports import views
-from sports.views import toggle_training_subscription, CustomUserCreationView, SportDetailView
+from sports.views import toggle_training_subscription, CustomUserCreationView, SportDetailView, home_view
 
 urlpatterns = [
-    path('', views.home, name='home'),  # Домашня сторінка
+    path('', home_view, name='home'),
     path('trainings/', views.TrainingListView.as_view(), name='training-list'),  # Список тренувань
     path('trainings/create/', views.TrainingCreateView.as_view(), name='training-create'),  # Створити тренування
     path('trainings/<int:pk>/update/', views.TrainingUpdateView.as_view(), name='training-update'),  # Оновити тренування

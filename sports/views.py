@@ -122,8 +122,17 @@ class SportDetailView(generic.DetailView):
         context['fields'] = Field.objects.filter(sports=self.object)
         return context
 
-def home(request):
-    return render(request, 'home.html')
+def home_view(request):
+    num_trainings = Training.objects.count()
+    num_fields = Field.objects.count()
+    num_sports = Sport.objects.count()
+
+    context = {
+        'num_trainings': num_trainings,
+        'num_fields': num_fields,
+        'num_sports': num_sports,
+    }
+    return render(request, 'home.html', context)
 
 
 
