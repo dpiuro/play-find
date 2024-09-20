@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ field.name }}</h1>
+<p>Location: {{ field.location }}</p>
+<p>Supported Sports: 
+    <ul>
+    {% for sport in field.sports.all %}
+        <li>{{ sport.name }}</li>
+    {% empty %}
+        <li>No sports available for this field.</li>
+    {% endfor %}
+    </ul>
+</p>
+<a href="{% url 'field-list' %}">Back to Fields</a>
+{% endblock %}

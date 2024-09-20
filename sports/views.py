@@ -82,6 +82,12 @@ class FieldDeleteView(generic.DeleteView):
     success_url = "/fields/"
 
 
+class FieldDetailView(generic.DetailView):
+    model = Field
+    template_name = "field/field_detail.html"
+    context_object_name = "field"
+
+
 class SportListView(generic.ListView):
     model = Sport
     template_name = "sport/sport_list.html"

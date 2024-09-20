@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>{{ view.action }} Field</h1>
+<h1>Create a new Field</h1>
 <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
+  {% csrf_token %}
+  {{ form.as_p }}  <!-- This will automatically render the "sports" field as a multiple-choice list -->
+  <button type="submit">Create Field</button>
 </form>
-<a href="{% url 'field-list' %}">Back to Field List</a>
 {% endblock %}

@@ -4,7 +4,8 @@
 <h1>Field List</h1>
 <ul>
     {% for field in fields %}
-    <li>{{ field.name }} – {{ field.location }}
+    <li>
+        <a href="{% url 'field-detail' field.pk %}">{{ field.name }} – {{ field.location }}</a>
         <a href="{% url 'field-update' field.pk %}">Edit</a> |
         <a href="{% url 'field-delete' field.pk %}">Delete</a>
     </li>

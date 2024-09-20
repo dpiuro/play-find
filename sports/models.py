@@ -50,9 +50,10 @@ class Training(models.Model):
             datetime=self.datetime
         )
         if overlapping_trainings.exists():
-            raise ValidationError(
-                "There is already a training scheduled on this field at the same time."
-            )
+            raise ValidationError("There is already a training scheduled on this field at the same time.")
+
+        if self.sport not in self.field.sports.all():
+            raise ValidationError(f"{self.sport.name} is not supported on this field.")
 
     def __str__(self):
         return f"Training at {self.field.name} on {self.datetime} for {self.sport}"
