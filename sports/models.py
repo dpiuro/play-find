@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -38,12 +39,20 @@ class Field (models.Model):
 
 
 class Training(models.Model):
-    field = models.ForeignKey(Field, on_delete=models.CASCADE)
-    sport = models.ForeignKey(Sport, on_delete=models.CASCADE)
-    datetime = models.DateTimeField()
-    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_trainings")
+    field = models.ForeignKey(Field, related_name="field_trainings", on_delete=models.CASCADE)
+    sport = models.ForeignKey(Sport, related_name="sport_trainings", on_delete=models.CASCADE)
     participants = models.ManyToManyField(User, related_name="participant_trainings", blank=True)
+    datetime = models.DateTimeField()
 
+    def clean(self):
+        overlapping_trainings = Training.objects.filter(
+            field=self.field,
+            datetime=self.datetime
+        )
+        if overlapping_trainings.exists():
+            raise ValidationError(
+                "There is already a training scheduled on this field at the same time."
+            )
 
     def __str__(self):
         return f"Training at {self.field.name} on {self.datetime} for {self.sport}"

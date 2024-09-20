@@ -22,4 +22,5 @@ urlpatterns = [
     path('search/', views.search_trainings, name='training-search'),
     path('register/', views.register, name='register'),
     path('signup/', CustomUserCreationView.as_view(), name='signup'),
+    path('trainings/<int:pk>/', views.TrainingDetailView.as_view(), name='training-detail'),
 ]

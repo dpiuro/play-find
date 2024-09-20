@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>{{ training.sport.name }} at {{ training.field.name }}</h2>
+  <p>Date and Time: {{ training.datetime }}</p>
+  <h3>Participants:</h3>
+  <ul>
+    {% for participant in training.participants.all %}
+      <li>{{ participant.username }}</li>
+    {% empty %}
+      <li>No participants yet.</li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'training-list' %}">Back to Trainings</a>
+{% endblock %}

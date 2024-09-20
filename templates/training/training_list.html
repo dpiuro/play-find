@@ -6,7 +6,9 @@
   <ul>
     {% for training in trainings %}
       <li>
-        {{ training.sport.name }} at {{ training.field.name }} on {{ training.datetime }}
+        <a href="{% url 'training-detail' training.pk %}">
+          {{ training.sport.name }} at {{ training.field.name }} on {{ training.datetime }}
+        </a>
         <a href="{% url 'training-update' training.pk %}">Edit</a> |
         <a href="{% url 'training-delete' training.pk %}">Delete</a> |
 
@@ -21,16 +23,6 @@
             {% endif %}
           </button>
         </form>
-
-        <!-- Виведення списку учасників -->
-        <ul>
-          <strong>Participants:</strong>
-          {% for participant in training.participants.all %}
-            <li>{{ participant.username }}</li>
-          {% empty %}
-            <li>No participants yet.</li>
-          {% endfor %}
-        </ul>
       </li>
     {% empty %}
       <li>No trainings available.</li>

@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views import generic
-from django.views.generic import View
+from django.views.generic import View, DetailView
 
 from .forms import CustomUserCreationForm
 from .models import Training, Sport, Field
@@ -49,6 +49,11 @@ class TrainingDeleteView(generic.DeleteView):
     model = Training
     template_name = "training/training_confirm_delete.html"
     success_url = "/"
+
+class TrainingDetailView(DetailView):
+    model = Training
+    template_name = 'training/training_detail.html'
+    context_object_name = 'training'
 
 
 class FieldListView(generic.ListView):
