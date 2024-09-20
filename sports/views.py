@@ -113,6 +113,17 @@ class SportDeleteView(generic.DeleteView):
     template_name = "sport/sport_confirm_delete.html"
     success_url = reverse_lazy('sport-list')
 
+
+class SportDetailView(generic.DetailView):
+    model = Sport
+    template_name = "sport/sport_detail.html"
+    context_object_name = "sport"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['fields'] = Field.objects.filter(sports=self.object)
+        return context
+
 def home(request):
     return render(request, 'home.html')
 
