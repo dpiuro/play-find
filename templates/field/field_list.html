@@ -3,6 +3,7 @@
 {% block content %}
 <div class="container mt-5">
     <h1 class="mb-4">Field List</h1>
+    <a href="{% url 'field-create' %}" class="btn btn-primary mt-4">Create new Field</a>
 
     {% if fields %}
     <table class="table table-striped">
@@ -37,7 +38,5 @@
     <p>No fields available.</p>
     {% endif %}
 
-    <!-- Кнопка створення нового поля -->
-    <a href="{% url 'field-create' %}" class="btn btn-primary mt-4">Create new Field</a>
 </div>
 {% endblock %}

@@ -4,7 +4,7 @@
 <div class="container mt-5">
     <!-- Виправлено заголовок, використано стандартні стилі Bootstrap -->
     <h1 class="mb-4">Sports List</h1>
-
+    <a href="{% url 'sport-create' %}" class="btn btn-primary mt-4">Create New Sport</a>
     <!-- Заміна списку на таблицю для більш зручного відображення -->
     {% if sports %}
     <table class="table table-striped">
@@ -45,8 +45,7 @@
     <p>No sports available.</p>
     {% endif %}
 
-    <!-- Застосування стандартних стилів Bootstrap до кнопки -->
-    <a href="{% url 'sport-create' %}" class="btn btn-primary mt-4">Create New Sport</a>
+
 </div>
 
 <script>

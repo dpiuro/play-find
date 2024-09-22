@@ -75,3 +75,16 @@ class SportModelTestCase(TestCase):
     def test_unique_sport_name(self):
         with self.assertRaises(Exception):
             Sport.objects.create(name="Volleyball")
+
+class FieldCreationTest(TestCase):
+    def setUp(self):
+        self.sport = Sport.objects.create(name="Basketball")
+
+    def test_create_field(self):
+        field = Field.objects.create(name="Basketball Court", location="Downtown")
+        field.sports.add(self.sport)  # Додаємо вид спорту до поля
+
+        self.assertEqual(Field.objects.count(), 1)
+        self.assertEqual(field.name, "Basketball Court")
+        self.assertEqual(field.location, "Downtown")
+        self.assertIn(self.sport, field.sports.all())
