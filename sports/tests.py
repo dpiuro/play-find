@@ -52,3 +52,26 @@ class TrainingTestCase(TestCase):
         response = self.client.get(reverse("training-list") + "?q=Football")
         self.assertContains(response, "Football")
         self.assertContains(response, "Main Field")
+
+
+class UserRegistrationTestCase(TestCase):
+
+    def test_user_registration(self):
+        form_data = {
+            "username": "newuser",
+            "password1": "Password123!",
+            "password2": "Password123!",
+        }
+        response = self.client.post(reverse("register"), data=form_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(User.objects.filter(username="newuser").exists())
+
+
+class SportModelTestCase(TestCase):
+
+    def setUp(self):
+        self.sport = Sport.objects.create(name="Volleyball")
+
+    def test_unique_sport_name(self):
+        with self.assertRaises(Exception):
+            Sport.objects.create(name="Volleyball")
