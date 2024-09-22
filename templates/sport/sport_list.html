@@ -1,29 +1,50 @@
-{% extends 'base.html' %}
+{% extends 'layouts/base_presentation.html' %}
 
 {% block content %}
-<h1>Sport List</h1>
-<ul>
-    {% for sport in sports %}
-        <li>
-            <a href="#" onclick="toggleFields('{{ sport.pk }}'); return false;">{{ sport.name }}</a>
-            <ul id="fields-{{ sport.pk }}" style="display: none;">
-                {% for field in sport.fields.all %}
-                    <li>{{ field.name }} – {{ field.location }}</li>
-                {% empty %}
-                    <li>No fields support this sport.</li>
-                {% endfor %}
-            </ul>
-            <!-- Кнопка для редагування виду спорту -->
-            <a href="{% url 'sport-update' sport.pk %}">Edit</a>
-            <!-- Кнопка для видалення виду спорту -->
-            <a href="{% url 'sport-delete' sport.pk %}">Delete</a>
-        </li>
-    {% empty %}
-        <li>No sports available.</li>
-    {% endfor %}
-</ul>
+<div class="container mt-5">
+    <!-- Виправлено заголовок, використано стандартні стилі Bootstrap -->
+    <h1 class="mb-4">Sports List</h1>
 
-<a href="{% url 'sport-create' %}" class="btn btn-primary">Create New Sport</a>
+    <!-- Заміна списку на таблицю для більш зручного відображення -->
+    {% if sports %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Sport</th>
+          <th>Fields</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sport in sports %}
+        <tr>
+          <td>
+            <a href="#" onclick="toggleFields('{{ sport.pk }}'); return false;">{{ sport.name }}</a>
+            <ul id="fields-{{ sport.pk }}" style="display: none; margin-top: 0.5rem;">
+              {% for field in sport.fields.all %}
+              <li>{{ field.name }} – {{ field.location }}</li>
+              {% empty %}
+              <li>No fields support this sport.</li>
+              {% endfor %}
+            </ul>
+          </td>
+          <td>{{ sport.fields.count }} fields</td>
+          <td>
+            <!-- Стилізація кнопок через Bootstrap -->
+            <a href="{% url 'sport-update' sport.pk %}" class="btn btn-primary btn-sm">Edit</a>
+            <a href="{% url 'sport-delete' sport.pk %}" class="btn btn-danger btn-sm">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>No sports available.</p>
+    {% endif %}
+
+    <!-- Застосування стандартних стилів Bootstrap до кнопки -->
+    <a href="{% url 'sport-create' %}" class="btn btn-primary mt-4">Create New Sport</a>
+</div>
 
 <script>
 function toggleFields(sportId) {

@@ -1,34 +1,51 @@
-{% extends 'base.html' %}
+{% extends 'layouts/base_presentation.html' %}
 
 {% block content %}
-  <h2>Training List</h2>
+<div class="container mt-5">
+    <h1 class="mb-4">
+      Training List
+      <a href="{% url 'training-create' %}" class="btn btn-primary" link-to-page">
+        Create New Training
+      </a>
+    </h1>
 
-  <ul>
-    {% for training in trainings %}
-      <li>
-        <a href="{% url 'training-detail' training.pk %}">
-          {{ training.sport.name }} at {{ training.field.name }} on {{ training.datetime }}
-        </a>
-        <a href="{% url 'training-update' training.pk %}">Edit</a> |
-        <a href="{% url 'training-delete' training.pk %}">Delete</a> |
+    {% if trainings %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Sport</th>
+          <th>Field</th>
+          <th>Date & Time</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for training in trainings %}
+        <tr>
+          <td>{{ training.sport.name }}</td>
+          <td>{{ training.field.name }}</td>
+          <td>{{ training.datetime }}</td>
+          <td>
+            <a href="{% url 'training-update' training.pk %}" class="btn btn-primary">Edit</a>
+            <a href="{% url 'training-delete' training.pk %}" class="btn btn-danger btn-sm">Delete</a>
 
-        <!-- Форма для підписки/відписки на тренування -->
-        <form method="post" action="{% url 'training-subscribe' training.pk %}" style="display: inline;">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-link">
-            {% if user in training.participants.all %}
-              Unsubscribe
-            {% else %}
-              Subscribe
-            {% endif %}
-          </button>
-        </form>
-      </li>
-    {% empty %}
-      <li>No trainings available.</li>
-    {% endfor %}
-  </ul>
-
-  <!-- Кнопка для створення нового тренування -->
-  <a href="{% url 'training-create' %}" class="btn btn-primary">Create New Training</a>
+            <form method="post" action="{% url 'training-subscribe' training.pk %}" style="display: inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-primary btn-sm">
+                {% if user in training.participants.all %}
+                  Unsubscribe
+                {% else %}
+                  Subscribe
+                {% endif %}
+              </button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <p>No trainings available.</p>
+    {% endif %}
+</div>
 {% endblock %}
