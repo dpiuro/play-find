@@ -1,9 +1,7 @@
-from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -15,13 +13,15 @@ from .forms import CustomUserCreationForm
 from .models import Training, Sport, Field
 
 
-User = get_user_model()
-
 class TrainingListView(generic.ListView):
     model = Training
     template_name = "training/training_list.html"
     context_object_name = "trainings"
     paginate_by = 5
+
+    def get_queryset(self):
+        return Training.objects.select_related('field', 'sport').prefetch_related('participants')
+
 
 @method_decorator(login_required, name='dispatch')
 class TrainingCreateView(generic.CreateView):
@@ -31,7 +31,6 @@ class TrainingCreateView(generic.CreateView):
     success_url = "/"
 
     def form_valid(self, form):
-        # Призначаємо поточного користувача як творця
         form.instance.creator = self.request.user
         response = super().form_valid(form)
 
@@ -46,10 +45,12 @@ class TrainingUpdateView(generic.UpdateView):
     template_name = "training/training_form.html"
     success_url = "/"
 
+
 class TrainingDeleteView(generic.DeleteView):
     model = Training
     template_name = "training/training_confirm_delete.html"
     success_url = "/"
+
 
 class TrainingDetailView(DetailView):
     model = Training
@@ -62,6 +63,9 @@ class FieldListView(generic.ListView):
     template_name = "field/field_list.html"
     context_object_name = "fields"
     paginate_by = 5
+
+    def get_queryset(self):
+        return Field.objects.prefetch_related('sports')
 
 
 class FieldCreateView(generic.CreateView):
@@ -89,6 +93,9 @@ class FieldDetailView(generic.DetailView):
     template_name = "field/field_detail.html"
     context_object_name = "field"
 
+    def get_queryset(self):
+        return Field.objects.prefetch_related('sports')
+
 
 class SportListView(generic.ListView):
     model = Sport
@@ -96,11 +103,13 @@ class SportListView(generic.ListView):
     context_object_name = "sports"
     paginate_by = 5
 
+
 class SportCreateView(generic.CreateView):
     model = Sport
     fields = ['name']
     template_name = "sport/sport_form.html"
     success_url = reverse_lazy('sport-list')
+
 
 class SportUpdateView(generic.UpdateView):
     model = Sport
@@ -108,7 +117,7 @@ class SportUpdateView(generic.UpdateView):
     template_name = "sport/sport_form.html"
     success_url = reverse_lazy('sport-list')
 
-# Видалення виду спорту
+
 class SportDeleteView(generic.DeleteView):
     model = Sport
     template_name = "sport/sport_confirm_delete.html"
@@ -120,10 +129,14 @@ class SportDetailView(generic.DetailView):
     template_name = "sport/sport_detail.html"
     context_object_name = "sport"
 
+    def get_queryset(self):
+        return Sport.objects.prefetch_related('fields')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['fields'] = Field.objects.filter(sports=self.object)
         return context
+
 
 def home_view(request):
     num_trainings = Training.objects.count()
@@ -136,7 +149,6 @@ def home_view(request):
         'num_sports': num_sports,
     }
     return render(request, 'home.html', context)
-
 
 
 @login_required
@@ -154,19 +166,9 @@ def toggle_training_subscription(request, pk):
 
 def search_trainings(request):
     query = request.GET.get('q')
-
-    # Фільтруємо тренування за запитом або показуємо всі
     trainings = Training.objects.filter(Q(sport__name__icontains=query)) if query else Training.objects.all()
+    return render(request, 'training/training_list.html', {'trainings': trainings, 'query': query})
 
-    # Додаємо пагінацію
-    paginator = Paginator(trainings, 8)  # 8 - кількість елементів на сторінку
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    return render(request, 'training/training_list.html', {
-        'trainings': page_obj,  # Передаємо сторінковий об'єкт
-        'query': query
-    })
 
 def register(request):
     if request.method == 'POST':
@@ -175,7 +177,7 @@ def register(request):
             form.save()
             return redirect('login')
         else:
-            form - CustomUserCreationForm()
+            form = CustomUserCreationForm()
         return render(request, 'registration/register.html', {'form': form})
 
 
@@ -183,4 +185,3 @@ class CustomUserCreationView(generic.CreateView):
     form_class = CustomUserCreationForm
     template_name = 'registration/signup.html'
     success_url = reverse_lazy('login')
-

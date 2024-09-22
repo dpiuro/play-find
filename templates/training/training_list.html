@@ -9,13 +9,15 @@
       </a>
     </h1>
 
-    <!-- Форма пошуку -->
-    <form method="GET">
-    <input type="text" name="q" placeholder="Search by username" value="{{ request.GET.q }}">
-    <button type="submit" class="btn btn-primary">
-      <i class="fa-solid fa-magnifying-glass"></i>
-    </button>
-  </form>
+
+
+<form method="GET" action="{% url 'training-search' %}" class="d-flex mb-3">
+  <input type="text" name="q" placeholder="Search by sport" value="{{ request.GET.q }}">
+  <button type="submit" class="btn btn-primary small-btn">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+</form>
+
 
     {% if trainings %}
     <table class="table table-striped">
@@ -53,7 +55,7 @@
       </tbody>
     </table>
 
-    <!-- Додаємо пагінацію -->
+    <!-- Додаємо підключення файла пагінації -->
     <div class="d-flex justify-content-center mt-4">
       {% include 'includes/pagination.html' %}
     </div>
