@@ -20,8 +20,8 @@
           <td>{{ field.location }}</td>
           <td>
             <!-- Застосовано стилі для кнопок Bootstrap -->
-            <a href="{% url 'field-update' field.pk %}" class="btn btn-primary btn-sm">Edit</a>
-            <a href="{% url 'field-delete' field.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            <a href="{% url 'field-update' field.pk %}" class="btn btn-group-lg ">Edit</a>
+            <a href="{% url 'field-delete' field.pk %}" class="btn btn btn-primary">Delete</a>
           </td>
         </tr>
         {% endfor %}

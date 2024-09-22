@@ -22,12 +22,15 @@
       <tbody>
       {% for training in trainings %}
         <tr>
-          <td>{{ training.sport.name }}</td>
+          <!-- Додаємо посилання на сторінку деталей тренування -->
+          <td>
+            <a href="{% url 'training-detail' training.pk %}">{{ training.sport.name }}</a>
+          </td>
           <td>{{ training.field.name }}</td>
           <td>{{ training.datetime }}</td>
           <td>
-            <a href="{% url 'training-update' training.pk %}" class="btn btn-primary">Edit</a>
-            <a href="{% url 'training-delete' training.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            <a href="{% url 'training-update' training.pk %}" class="btn btn-group-lg ">Edit</a>
+            <a href="{% url 'training-delete' training.pk %}" class="btn btn btn-primary">Delete</a>
 
             <form method="post" action="{% url 'training-subscribe' training.pk %}" style="display: inline;">
               {% csrf_token %}
@@ -44,6 +47,12 @@
       {% endfor %}
       </tbody>
     </table>
+
+    <!-- Додаємо підключення файла пагінації -->
+    <div class="d-flex justify-content-center mt-4">
+      {% include 'includes/pagination.html' %}
+    </div>
+
     {% else %}
       <p>No trainings available.</p>
     {% endif %}

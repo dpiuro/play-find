@@ -20,7 +20,7 @@ class TrainingListView(generic.ListView):
     model = Training
     template_name = "training/training_list.html"
     context_object_name = "trainings"
-
+    paginate_by = 5
 
 @method_decorator(login_required, name='dispatch')
 class TrainingCreateView(generic.CreateView):

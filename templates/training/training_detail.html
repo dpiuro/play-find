@@ -1,15 +1,23 @@
 {% extends 'layouts/base_presentation.html' %}
 
 {% block content %}
-  <h2>{{ training.sport.name }} at {{ training.field.name }}</h2>
-  <p>Date and Time: {{ training.datetime }}</p>
-  <h3>Participants:</h3>
-  <ul>
-    {% for participant in training.participants.all %}
-      <li>{{ participant.username }}</li>
-    {% empty %}
-      <li>No participants yet.</li>
-    {% endfor %}
-  </ul>
-  <a href="{% url 'training-list' %}">Back to Trainings</a>
+<div class="container mt-5">
+    <h1 class="mb-4">{{ training.sport.name }} at {{ training.field.name }}</h1>
+
+    <p><strong>Date and Time:</strong> {{ training.datetime }}</p>
+
+    <h3>Participants:</h3>
+    {% if training.participants.all %}
+      <ul class="list-group mb-4" style="max-width: 400px;">
+        {% for participant in training.participants.all %}
+          <!-- Вирівнюємо список учасників по лівій стороні -->
+          <li class="list-group-item" style="width: fit-content; text-align: left;">{{ participant.username }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No participants yet.</p>
+    {% endif %}
+
+    <a href="{% url 'training-list' %}" class="btn btn-primary mt-3">Back to Trainings</a>
+</div>
 {% endblock %}
