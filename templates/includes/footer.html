@@ -1,41 +1,55 @@
-<footer class="footer">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-12">
-        <div class="text-center">
-          <p class="my-4 text-sm">
-            Repository &copy; <a target="_blank" href="https://bit.ly/3fKQZaL" class="text-white" target="_blank">dpiuro</a>
-            <a target="_blank" href="https://github.com/dpiuro/play-find" class="text-white" target="_blank">Play&Find</a>
-          </p>
+<body>
+  <div class="main-content">
+    <!-- Ваш основний контент тут -->
+  </div>
+  <footer class="footer">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12">
+          <div class="text-center">
+            <p class="my-4 text-sm">
+              Repository &copy; <a target="_blank" href="https://bit.ly/3fKQZaL" class="text-white">dpiuro</a>
+              <a target="_blank" href="https://github.com/dpiuro/play-find" class="text-white">Play&Find</a>
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</footer>
+  </footer>
 
-<style>
-  body {
-    background-color: #e9e9f0;  /* тут можна шрифт */
-  }
+  <style>
+    html, body {
+      height: 100%; /* Забезпечує висоту на весь екран */
+      margin: 0;
+    }
 
-  .footer {
-    background: linear-gradient(90deg, rgba(255, 0, 132, 0.8) 0%, rgba(102, 51, 255, 0.8) 100%);
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    text-align: center;
-    width: 100%; /* Ширина футера на всю сторінку */
-    font-size: 19px;
-    font-weight: bold;
-    color: #fafaff;
-    padding: 10px 0;
-  }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh; /* Забезпечує мінімальну висоту body на весь екран */
+      background-color: #e9e9f0;
+    }
 
-  .footer a {
-    color: #fafaff; /* Колір тексту посилань */
-  }
+    .main-content {
+      flex: 1; /* Забезпечує, що основний контент займає весь доступний простір */
+    }
 
-  .footer a:hover {
-    text-decoration: underline; /* Додаємо підкреслення при наведенні */
-  }
-</style>
+    .footer {
+      background: linear-gradient(90deg, rgba(255, 0, 132, 0.8) 0%, rgba(102, 51, 255, 0.8) 100%);
+      text-align: center;
+      width: 100%;
+      font-size: 19px;
+      font-weight: bold;
+      color: #fafaff;
+      padding: 10px 0;
+    }
+
+    .footer a {
+      color: #fafaff;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</body>

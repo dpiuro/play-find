@@ -1,27 +1,27 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Контейнер для основного контенту */
+.page-header {
+  flex: 1; /* Займає весь доступний простір */
+  min-height: calc(100vh - 100px); /* Висота екрану мінус висота футера */
+  background-size: cover;
+  background-position: center;
+}
+
+/* Футер */
 .footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background-color: #6f42c1; /* Колір футера */
+  height: 100px; /* Фіксована висота футера */
+  background-color: #6f42c1;
   color: white;
   text-align: center;
   padding: 10px 0;
-  z-index: 1;
-}
-
-body {
-  min-height: 100vh; /* Забезпечує мінімальну висоту body на весь екран */
+  width: 100%;
   position: relative;
-  z-index: 2; /* Забезпечує, що контент сторінки накладається поверх футера */
-  padding-top: 0; /* Відсутність відступу зверху */
-  padding-bottom: 100px; /* Додаємо відступ, щоб контент не перекривав футер */
-  margin: 0; /* Забезпечує, що немає зайвих відступів у body */
-  overflow-x: hidden; /* Запобігає горизонтальній прокрутці */
-  overflow-y: auto; /* Дозволяє вертикальну прокрутку */
-}
-
-
-/* Відступ для останнього елемента перед футером */
-.pagination-container {
-  margin-bottom: 80px; /* Забезпечує, що пагінація не накладається на футер */
+  bottom: 0;
 }
