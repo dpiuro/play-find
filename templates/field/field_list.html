@@ -19,7 +19,7 @@
           <td><a href="{% url 'field-detail' field.pk %}">{{ field.name }}</a></td>
           <td>{{ field.location }}</td>
           <td>
-            <!-- Застосовано стилі для кнопок Bootstrap -->
+            <!-- Кнопки дій -->
             <a href="{% url 'field-update' field.pk %}" class="btn btn-group-lg ">Edit</a>
             <a href="{% url 'field-delete' field.pk %}" class="btn btn btn-primary">Delete</a>
           </td>
@@ -27,11 +27,17 @@
         {% endfor %}
       </tbody>
     </table>
+
+    <!-- Додаємо підключення файла пагінації -->
+    <div class="d-flex justify-content-center mt-4">
+      {% include 'includes/pagination.html' %}
+    </div>
+
     {% else %}
     <p>No fields available.</p>
     {% endif %}
 
-    <!-- Додав клас Bootstrap до кнопки -->
+    <!-- Кнопка створення нового поля -->
     <a href="{% url 'field-create' %}" class="btn btn-primary mt-4">Create new Field</a>
 </div>
 {% endblock %}

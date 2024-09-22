@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -60,6 +61,7 @@ class FieldListView(generic.ListView):
     model = Field
     template_name = "field/field_list.html"
     context_object_name = "fields"
+    paginate_by = 5
 
 
 class FieldCreateView(generic.CreateView):
@@ -92,6 +94,7 @@ class SportListView(generic.ListView):
     model = Sport
     template_name = "sport/sport_list.html"
     context_object_name = "sports"
+    paginate_by = 5
 
 class SportCreateView(generic.CreateView):
     model = Sport
@@ -148,11 +151,22 @@ def toggle_training_subscription(request, pk):
 
     return redirect('training-list')
 
+
 def search_trainings(request):
     query = request.GET.get('q')
-    trainings = Training.objects.filter(Q(sport__name__icontains=query))
-    return render(request, 'training/training_search_results.html', {'trainings': trainings})
 
+    # Фільтруємо тренування за запитом або показуємо всі
+    trainings = Training.objects.filter(Q(sport__name__icontains=query)) if query else Training.objects.all()
+
+    # Додаємо пагінацію
+    paginator = Paginator(trainings, 8)  # 8 - кількість елементів на сторінку
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'training/training_list.html', {
+        'trainings': page_obj,  # Передаємо сторінковий об'єкт
+        'query': query
+    })
 
 def register(request):
     if request.method == 'POST':

@@ -38,6 +38,9 @@
         {% endfor %}
       </tbody>
     </table>
+      <div class="d-flex justify-content-center mt-4">
+      {% include 'includes/pagination.html' %}
+    </div>
     {% else %}
     <p>No sports available.</p>
     {% endif %}
