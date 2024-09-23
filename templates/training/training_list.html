@@ -2,6 +2,18 @@
 
 {% block content %}
 <div class="container mt-5">
+    <!-- Блок для відображення повідомлень -->
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <h1 class="mb-4">
       Training List
       <a href="{% url 'training-create' %}" class="btn btn-primary" link-to-page">
@@ -9,21 +21,12 @@
       </a>
     </h1>
 
-{% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-<form method="GET" action="{% url 'training-search' %}" class="d-flex mb-3">
+  <form method="GET" action="{% url 'training-search' %}" class="d-flex mb-3">
   <input type="text" name="q" placeholder="Search by sport" value="{{ request.GET.q }}">
   <button type="submit" class="btn btn-primary small-btn">
     <i class="fa-solid fa-magnifying-glass"></i>
   </button>
 </form>
-
 
     {% if trainings %}
     <table class="table table-striped">
@@ -61,7 +64,6 @@
       </tbody>
     </table>
 
-    <!-- Додаємо підключення файла пагінації -->
     <div class="d-flex justify-content-center mt-4">
       {% include 'includes/pagination.html' %}
     </div>
