@@ -43,6 +43,7 @@ class Training(models.Model):
     sport = models.ForeignKey(Sport, related_name="sport_trainings", on_delete=models.CASCADE)
     participants = models.ManyToManyField(User, related_name="participant_trainings", blank=True)
     datetime = models.DateTimeField()
+    creator = models.ForeignKey(User, related_name="created_trainings", on_delete=models.CASCADE)
 
     def clean(self):
         overlapping_trainings = Training.objects.filter(

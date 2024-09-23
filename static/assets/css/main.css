@@ -25,3 +25,7 @@ html, body {
   position: relative;
   bottom: 0;
 }
+
+.text-custom-color {
+    color: #C77DFF; /* Світлий фіолетовий */
+}

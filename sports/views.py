@@ -2,9 +2,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views import generic
 from django.views.generic import View, DetailView
@@ -13,11 +15,12 @@ from .forms import CustomUserCreationForm
 from .models import Training, Sport, Field
 
 
-class TrainingListView(generic.ListView):
+class TrainingListView(LoginRequiredMixin, generic.ListView):
     model = Training
     template_name = "training/training_list.html"
     context_object_name = "trainings"
     paginate_by = 5
+    login_url = "login"
 
     def get_queryset(self):
         return Training.objects.select_related('field', 'sport').prefetch_related('participants')
@@ -39,11 +42,21 @@ class TrainingCreateView(generic.CreateView):
         return response
 
 
-class TrainingUpdateView(generic.UpdateView):
+class TrainingUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Training
     fields = ['field', 'sport', 'datetime']
     template_name = "training/training_form.html"
     success_url = "/"
+    login_url = "login"
+
+    def dispatch(self, request, *args, **kwargs):
+        training = self.get_object()
+
+        if not request.user.is_staff and training.creator != request.user:
+            messages.error(request, "You do not have permission to edit this training.")
+            return redirect(reverse('training-list'))  # Redirect to training list or another page
+
+        return super().dispatch(request, *args, **kwargs)
 
 
 class TrainingDeleteView(generic.DeleteView):
@@ -51,6 +64,14 @@ class TrainingDeleteView(generic.DeleteView):
     template_name = "training/training_confirm_delete.html"
     success_url = "/"
 
+    def dispatch(self, request, *args, **kwargs):
+        training = self.get_object()
+
+        if not request.user.is_staff and training.creator != request.user:
+            messages.error(request, "You do not have permission to delete this training.")
+            return redirect(reverse('training-list'))  # Redirect to training list or another page
+
+        return super().dispatch(request, *args, **kwargs)
 
 class TrainingDetailView(DetailView):
     model = Training
@@ -66,6 +87,14 @@ class FieldListView(generic.ListView):
 
     def get_queryset(self):
         return Field.objects.prefetch_related('sports')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Додаємо змінну is_admin для групи Admins
+        context['is_admin'] = self.request.user.groups.filter(name="Admins").exists()
+        # Додаємо змінну is_staff для перевірки, чи користувач є staff
+        context['is_staff'] = self.request.user.is_staff
+        return context
 
 
 class FieldCreateView(generic.CreateView):
@@ -102,6 +131,15 @@ class SportListView(generic.ListView):
     template_name = "sport/sport_list.html"
     context_object_name = "sports"
     paginate_by = 5
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Додаємо змінну is_admin для групи Admins
+        context['is_admin'] = self.request.user.groups.filter(name="Admins").exists()
+        # Додаємо змінну is_staff для перевірки, чи користувач є staff
+        context['is_staff'] = self.request.user.is_staff
+        return context
+
 
 
 class SportCreateView(generic.CreateView):
