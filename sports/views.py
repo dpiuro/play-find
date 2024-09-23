@@ -32,6 +32,7 @@ class TrainingCreateView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy('training-list')
 
     def form_valid(self, form):
+        form.instance.creator = self.request.user
         try:
             form.instance.full_clean()
         except ValidationError as e:
