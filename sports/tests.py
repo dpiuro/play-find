@@ -87,7 +87,7 @@ class FieldCreationTest(TestCase):
 
     def test_create_field(self):
         field = Field.objects.create(name="Basketball Court", location="Downtown")
-        field.sports.add(self.sport)  # Додаємо вид спорту до поля
+        field.sports.add(self.sport)
 
         self.assertEqual(Field.objects.count(), 1)
         self.assertEqual(field.name, "Basketball Court")
