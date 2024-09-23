@@ -13,3 +13,4 @@ Enjoy using!
 2. Install the dependencies using `pip install -r requirements.txt`.
 3. Run migrations with `python manage.py migrate`.
 4. Start the development server with `python manage.py runserver`.
+5. Load initial data with `python manage.py loaddata data.json`.
