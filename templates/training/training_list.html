@@ -2,7 +2,6 @@
 
 {% block content %}
 <div class="container mt-5">
-    <!-- Блок для відображення повідомлень -->
     {% if messages %}
         <div>
             {% for message in messages %}
@@ -16,9 +15,7 @@
 
     <h1 class="mb-4">
       Training List
-      <a href="{% url 'training-create' %}" class="btn btn-primary" link-to-page">
-        Create New Training
-      </a>
+      <a href="{% url 'training-create' %}" class="btn btn-primary">Create Training</a>
     </h1>
 
   <form method="GET" action="{% url 'training-search' %}" class="d-flex mb-3">

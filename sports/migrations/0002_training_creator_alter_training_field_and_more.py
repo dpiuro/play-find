@@ -7,24 +7,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sports', '0001_initial'),
+        ("sports", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='training',
-            name='creator',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='created_trainings', to='sports.user'),
+            model_name="training",
+            name="creator",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="created_trainings",
+                to="sports.user",
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='training',
-            name='field',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sports.field'),
+            model_name="training",
+            name="field",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="sports.field"
+            ),
         ),
         migrations.AlterField(
-            model_name='training',
-            name='sport',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='sports.sport'),
+            model_name="training",
+            name="sport",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="sports.sport"
+            ),
         ),
     ]

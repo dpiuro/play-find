@@ -14,22 +14,22 @@ class User(AbstractUser):
     age = models.IntegerField(null=True, blank=True)
 
     groups = models.ManyToManyField(
-        'auth.Group',
-        related_name='sports_user_set',
+        "auth.Group",
+        related_name="sports_user_set",
         blank=True,
-        help_text='The groups this user belongs to.',
-        verbose_name='groups',
+        help_text="The groups this user belongs to.",
+        verbose_name="groups",
     )
     user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        related_name='sports_user_permissions_set',
+        "auth.Permission",
+        related_name="sports_user_permissions_set",
         blank=True,
-        help_text='Specific permissions for this user.',
-        verbose_name='user permissions',
+        help_text="Specific permissions for this user.",
+        verbose_name="user permissions",
     )
 
 
-class Field (models.Model):
+class Field(models.Model):
     name = models.CharField(max_length=255, unique=True)
     location = models.CharField(max_length=255)
     sports = models.ManyToManyField(Sport, related_name="fields")
@@ -39,19 +39,28 @@ class Field (models.Model):
 
 
 class Training(models.Model):
-    field = models.ForeignKey(Field, related_name="field_trainings", on_delete=models.CASCADE)
-    sport = models.ForeignKey(Sport, related_name="sport_trainings", on_delete=models.CASCADE)
-    participants = models.ManyToManyField(User, related_name="participant_trainings", blank=True)
+    field = models.ForeignKey(
+        Field, related_name="field_trainings", on_delete=models.CASCADE
+    )
+    sport = models.ForeignKey(
+        Sport, related_name="sport_trainings", on_delete=models.CASCADE
+    )
+    participants = models.ManyToManyField(
+        User, related_name="participant_trainings", blank=True
+    )
     datetime = models.DateTimeField()
-    creator = models.ForeignKey(User, related_name="created_trainings", on_delete=models.CASCADE)
+    creator = models.ForeignKey(
+        User, related_name="created_trainings", on_delete=models.CASCADE
+    )
 
     def clean(self):
         overlapping_trainings = Training.objects.filter(
-            field=self.field,
-            datetime=self.datetime
+            field=self.field, datetime=self.datetime
         )
         if overlapping_trainings.exists():
-            raise ValidationError("There is already a training scheduled on this field at the same time.")
+            raise ValidationError(
+                "There is already a training scheduled on this field at the same time."
+            )
 
         if self.sport not in self.field.sports.all():
             raise ValidationError(f"{self.sport.name} is not supported on this field.")

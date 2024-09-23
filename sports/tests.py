@@ -24,7 +24,7 @@ class TrainingTestCase(TestCase):
         form_data = {
             "field": self.field.id,
             "sport": self.sport.id,
-            "datetime": "2024-09-25 12:00"
+            "datetime": "2024-09-25 12:00",
         }
         response = self.client.post(reverse("training-create"), data=form_data)
         self.assertEqual(response.status_code, 302)
@@ -34,17 +34,21 @@ class TrainingTestCase(TestCase):
         form_data = {
             "field": self.field.id,
             "sport": self.sport.id,
-            "datetime": "2024-09-26 10:00"
+            "datetime": "2024-09-26 10:00",
         }
         response = self.client.post(
             reverse("training-update", kwargs={"pk": self.training.pk}), data=form_data
         )
         self.training.refresh_from_db()
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(self.training.datetime.strftime('%Y-%m-%d %H:%M'), "2024-09-26 10:00")
+        self.assertEqual(
+            self.training.datetime.strftime("%Y-%m-%d %H:%M"), "2024-09-26 10:00"
+        )
 
     def test_delete_training(self):
-        response = self.client.post(reverse("training-delete", kwargs={"pk": self.training.pk}))
+        response = self.client.post(
+            reverse("training-delete", kwargs={"pk": self.training.pk})
+        )
         self.assertEqual(response.status_code, 302)
         self.assertFalse(Training.objects.filter(id=self.training.id).exists())
 
@@ -75,6 +79,7 @@ class SportModelTestCase(TestCase):
     def test_unique_sport_name(self):
         with self.assertRaises(Exception):
             Sport.objects.create(name="Volleyball")
+
 
 class FieldCreationTest(TestCase):
     def setUp(self):

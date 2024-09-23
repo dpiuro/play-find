@@ -1,15 +1,12 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from django.contrib import messages
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
-from django.utils.decorators import method_decorator
 from django.views import generic
-from django.views.generic import View, DetailView
+from django.views.generic import DetailView
 
 from .forms import CustomUserCreationForm
 from .models import Training, Sport, Field
@@ -23,28 +20,30 @@ class TrainingListView(LoginRequiredMixin, generic.ListView):
     login_url = "login"
 
     def get_queryset(self):
-        return Training.objects.select_related('field', 'sport').prefetch_related('participants')
+        return (
+            Training.objects.select_related(
+                "field", "sport").prefetch_related("participants")
+        )
 
-
-@method_decorator(login_required, name='dispatch')
-class TrainingCreateView(generic.CreateView):
+class TrainingCreateView(LoginRequiredMixin, generic.CreateView):
     model = Training
     fields = ['field', 'sport', 'datetime']
     template_name = "training/training_form.html"
-    success_url = "/"
+    success_url = reverse_lazy('training-list')
 
     def form_valid(self, form):
-        form.instance.creator = self.request.user
-        response = super().form_valid(form)
+        try:
+            form.instance.full_clean()
+        except ValidationError as e:
+            form.add_error(None, e)
+            return self.form_invalid(form)
 
-        # Додаємо творця до учасників
-        self.object.participants.add(self.request.user)
-        return response
+        return super().form_valid(form)
 
 
 class TrainingUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Training
-    fields = ['field', 'sport', 'datetime']
+    fields = ["field", "sport", "datetime"]
     template_name = "training/training_form.html"
     success_url = "/"
     login_url = "login"
@@ -53,8 +52,12 @@ class TrainingUpdateView(LoginRequiredMixin, generic.UpdateView):
         training = self.get_object()
 
         if not request.user.is_staff and training.creator != request.user:
-            messages.error(request, "You do not have permission to edit this training.")
-            return redirect(reverse('training-list'))  # Redirect to training list or another page
+            messages.error(
+                request, "You do not have permission to edit this training."
+            )
+            return redirect(
+                reverse("training-list")
+            )
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -68,15 +71,20 @@ class TrainingDeleteView(generic.DeleteView):
         training = self.get_object()
 
         if not request.user.is_staff and training.creator != request.user:
-            messages.error(request, "You do not have permission to delete this training.")
-            return redirect(reverse('training-list'))  # Redirect to training list or another page
+            messages.error(
+                request, "You do not have permission to delete this training."
+            )
+            return redirect(
+                reverse("training-list")
+            )
 
         return super().dispatch(request, *args, **kwargs)
 
+
 class TrainingDetailView(DetailView):
     model = Training
-    template_name = 'training/training_detail.html'
-    context_object_name = 'training'
+    template_name = "training/training_detail.html"
+    context_object_name = "training"
 
 
 class FieldListView(generic.ListView):
@@ -86,27 +94,27 @@ class FieldListView(generic.ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        return Field.objects.prefetch_related('sports')
+        return Field.objects.prefetch_related("sports")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Додаємо змінну is_admin для групи Admins
-        context['is_admin'] = self.request.user.groups.filter(name="Admins").exists()
-        # Додаємо змінну is_staff для перевірки, чи користувач є staff
-        context['is_staff'] = self.request.user.is_staff
+        context["is_admin"] = (
+            self.request.user.groups.filter(name="Admins").exists()
+        )
+        context["is_staff"] = self.request.user.is_staff
         return context
 
 
 class FieldCreateView(generic.CreateView):
     model = Field
-    fields = ['name', 'location', 'sports']
+    fields = ["name", "location", "sports"]
     template_name = "field/field_form.html"
     success_url = "/fields/"
 
 
 class FieldUpdateView(generic.UpdateView):
     model = Field
-    fields = ['name', 'location', 'sports']
+    fields = ["name", "location", "sports"]
     template_name = "field/field_form.html"
     success_url = "/fields/"
 
@@ -123,7 +131,7 @@ class FieldDetailView(generic.DetailView):
     context_object_name = "field"
 
     def get_queryset(self):
-        return Field.objects.prefetch_related('sports')
+        return Field.objects.prefetch_related("sports")
 
 
 class SportListView(generic.ListView):
@@ -134,32 +142,31 @@ class SportListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Додаємо змінну is_admin для групи Admins
-        context['is_admin'] = self.request.user.groups.filter(name="Admins").exists()
-        # Додаємо змінну is_staff для перевірки, чи користувач є staff
-        context['is_staff'] = self.request.user.is_staff
+        context["is_admin"] = (
+            self.request.user.groups.filter(name="Admins").exists()
+        )
+        context["is_staff"] = self.request.user.is_staff
         return context
-
 
 
 class SportCreateView(generic.CreateView):
     model = Sport
-    fields = ['name']
+    fields = ["name"]
     template_name = "sport/sport_form.html"
-    success_url = reverse_lazy('sport-list')
+    success_url = reverse_lazy("sport-list")
 
 
 class SportUpdateView(generic.UpdateView):
     model = Sport
-    fields = ['name']
+    fields = ["name"]
     template_name = "sport/sport_form.html"
-    success_url = reverse_lazy('sport-list')
+    success_url = reverse_lazy("sport-list")
 
 
 class SportDeleteView(generic.DeleteView):
     model = Sport
     template_name = "sport/sport_confirm_delete.html"
-    success_url = reverse_lazy('sport-list')
+    success_url = reverse_lazy("sport-list")
 
 
 class SportDetailView(generic.DetailView):
@@ -168,11 +175,11 @@ class SportDetailView(generic.DetailView):
     context_object_name = "sport"
 
     def get_queryset(self):
-        return Sport.objects.prefetch_related('fields')
+        return Sport.objects.prefetch_related("fields")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['fields'] = Field.objects.filter(sports=self.object)
+        context["fields"] = Field.objects.filter(sports=self.object)
         return context
 
 
@@ -182,11 +189,11 @@ def home_view(request):
     num_sports = Sport.objects.count()
 
     context = {
-        'num_trainings': num_trainings,
-        'num_fields': num_fields,
-        'num_sports': num_sports,
+        "num_trainings": num_trainings,
+        "num_fields": num_fields,
+        "num_sports": num_sports,
     }
-    return render(request, 'home.html', context)
+    return render(request, "home.html", context)
 
 
 @login_required
@@ -195,31 +202,43 @@ def toggle_training_subscription(request, pk):
     user = request.user
 
     if user in training.participants.all():
-        training.participants.remove(user)  # Відписатися
+        training.participants.remove(user)
     else:
-        training.participants.add(user)  # Підписатися
+        training.participants.add(user)
 
-    return redirect('training-list')
+    return redirect("training-list")
 
 
 def search_trainings(request):
-    query = request.GET.get('q')
-    trainings = Training.objects.filter(Q(sport__name__icontains=query)) if query else Training.objects.all()
-    return render(request, 'training/training_list.html', {'trainings': trainings, 'query': query})
+    query = request.GET.get("q")
+    trainings = (
+        Training.objects.filter(Q(sport__name__icontains=query))
+        if query
+        else Training.objects.all()
+    )
+    return render(
+        request,
+        "training/training_list.html",
+        {"trainings": trainings, "query": query}
+    )
 
 
 def register(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('login')
+            return redirect("login")
         else:
             form = CustomUserCreationForm()
-        return render(request, 'registration/register.html', {'form': form})
+        return render(
+            request,
+            "registration/register.html",
+            {"form": form}
+        )
 
 
 class CustomUserCreationView(generic.CreateView):
     form_class = CustomUserCreationForm
-    template_name = 'registration/signup.html'
-    success_url = reverse_lazy('login')
+    template_name = "registration/signup.html"
+    success_url = reverse_lazy("login")

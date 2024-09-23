@@ -1,0 +1,191 @@
+[
+  {
+    "model": "sports.Sport",
+    "pk": 1,
+    "fields": { "name": "Football" }
+  },
+  {
+    "model": "sports.Sport",
+    "pk": 2,
+    "fields": { "name": "Tennis" }
+  },
+  {
+    "model": "sports.Sport",
+    "pk": 3,
+    "fields": { "name": "Basketball" }
+  },
+  {
+    "model": "sports.Sport",
+    "pk": 4,
+    "fields": { "name": "Running" }
+  },
+  {
+    "model": "sports.User",
+    "pk": 1,
+    "fields": {
+      "username": "roger_federer",
+      "first_name": "Roger",
+      "last_name": "Federer",
+      "age": 40
+    }
+  },
+  {
+    "model": "sports.User",
+    "pk": 2,
+    "fields": {
+      "username": "lebron_james",
+      "first_name": "LeBron",
+      "last_name": "James",
+      "age": 36
+    }
+  },
+  {
+    "model": "sports.User",
+    "pk": 3,
+    "fields": {
+      "username": "usain_bolt",
+      "first_name": "Usain",
+      "last_name": "Bolt",
+      "age": 34
+    }
+  },
+  {
+    "model": "sports.User",
+    "pk": 4,
+    "fields": {
+      "username": "michael_phelps",
+      "first_name": "Michael",
+      "last_name": "Phelps",
+      "age": 35
+    }
+  },
+  {
+    "model": "sports.User",
+    "pk": 5,
+    "fields": {
+      "username": "serena_williams",
+      "first_name": "Serena",
+      "last_name": "Williams",
+      "age": 39
+    }
+  },
+  {
+    "model": "sports.User",
+    "pk": 6,
+    "fields": {
+      "username": "frank_lampard",
+      "first_name": "Frank",
+      "last_name": "Lampard",
+      "age": 42
+    }
+  },
+  {
+    "model": "sports.User",
+    "pk": 7,
+    "fields": {
+      "username": "steven_gerrard",
+      "first_name": "Steven",
+      "last_name": "Gerrard",
+      "age": 41
+    }
+  },
+  {
+    "model": "sports.User",
+    "pk": 8,
+    "fields": {
+      "username": "rafa_nadal",
+      "first_name": "Rafael",
+      "last_name": "Nadal",
+      "age": 35
+    }
+  },
+  {
+    "model": "sports.Field",
+    "pk": 1,
+    "fields": {
+      "name": "Stamford Bridge",
+      "location": " Fulham Rd., London SW6 1HS",
+      "sports": [1, 2]
+    }
+  },
+  {
+    "model": "sports.Field",
+    "pk": 2,
+    "fields": {
+      "name": "Wimbledon Court",
+      "location": "Church Road, Wimbledon",
+      "sports": [2]
+    }
+  },
+  {
+    "model": "sports.Field",
+    "pk": 3,
+    "fields": {
+      "name": "Madison Square Garden",
+      "location": "4 Pennsylvania Plaza, New York",
+      "sports": [3, 8]
+    }
+  },
+  {
+    "model": "sports.Field",
+    "pk": 4,
+    "fields": {
+      "name": "Olympic Stadium",
+      "location": "Stratford, London",
+      "sports": [4, 1, 6]
+    }
+  },
+  {
+    "model": "sports.Field",
+    "pk": 5,
+    "fields": {
+      "name": "Park Avenue Field",
+      "location": "Park Avenue, New York",
+      "sports": [4, 1]
+    }
+  },
+  {
+    "model": "sports.Training",
+    "pk": 1,
+    "fields": {
+      "field": 1,
+      "sport": 1,
+      "datetime": "2024-09-23T10:00:00Z",
+      "creator": 6,
+      "participants": [6, 7]
+    }
+  },
+  {
+    "model": "sports.Training",
+    "pk": 2,
+    "fields": {
+      "field": 2,
+      "sport": 2,
+      "datetime": "2024-09-23T14:00:00Z",
+      "creator": 8,
+      "participants": [1, 8]
+    }
+  },
+  {
+    "model": "sports.Training",
+    "pk": 3,
+    "fields": {
+      "field": 3,
+      "sport": 3,
+      "datetime": "2024-09-24T16:00:00Z",
+      "creator": 2,
+      "participants": [2]
+    }
+  },
+  {
+    "model": "sports.Training",
+    "pk": 4,
+    "fields": {
+      "field": 4,
+      "sport": 4,
+      "datetime": "2024-09-25T09:00:00Z",
+      "creator": 3,
+      "participants": [3]
+    }
+  }
+]
