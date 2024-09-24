@@ -1,0 +1,31 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Контейнер для основного контенту */
+.page-header {
+  flex: 1; /* Займає весь доступний простір */
+  min-height: calc(100vh - 100px); /* Висота екрану мінус висота футера */
+  background-size: cover;
+  background-position: center;
+}
+
+/* Футер */
+.footer {
+  height: 100px; /* Фіксована висота футера */
+  background-color: #6f42c1;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  width: 100%;
+  position: relative;
+  bottom: 0;
+}
+
+.text-custom-color {
+    color: #C77DFF; /* Світлий фіолетовий */
+}

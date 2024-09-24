@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Додаємо Python в PATH
+export PATH="/opt/render/project/python/bin:$PATH"
+
 # Exit on error
 set -o errexit
 
