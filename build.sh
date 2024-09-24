@@ -3,15 +3,14 @@
 # Exit on error
 set -o errexit
 
+# Удаляємо та перевстановлюємо gunicorn
+pip uninstall gunicorn -y && pip install gunicorn
+
+# Установити залежності
 pip install -r requirements.txt
 
-
-echo "Шлях до Python:"
-which python
-
-echo "Змінна PATH:"
-echo $PATH
-
+# Збираємо статичні файли
 python manage.py collectstatic --no-input
 
+# Виконуємо міграції
 python manage.py migrate
