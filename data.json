@@ -20,6 +20,26 @@
     "fields": { "name": "Running" }
   },
   {
+    "model": "sports.Sport",
+    "pk": 5,
+    "fields": { "name": "Volleyball" }
+  },
+  {
+    "model": "sports.Sport",
+    "pk": 6,
+    "fields": { "name": "Badminton" }
+  },
+  {
+    "model": "sports.Sport",
+    "pk": 7,
+    "fields": { "name": "Yoga" }
+  },
+  {
+    "model": "sports.Sport",
+    "pk": 8,
+    "fields": { "name": "Cycling" }
+  },
+  {
     "model": "sports.User",
     "pk": 1,
     "fields": {
@@ -123,7 +143,7 @@
     "fields": {
       "name": "Madison Square Garden",
       "location": "4 Pennsylvania Plaza, New York",
-      "sports": [3, 8]
+      "sports": [3]
     }
   },
   {
@@ -132,7 +152,7 @@
     "fields": {
       "name": "Olympic Stadium",
       "location": "Stratford, London",
-      "sports": [4, 1, 6]
+      "sports": [4, 5, 6]
     }
   },
   {
@@ -141,7 +161,7 @@
     "fields": {
       "name": "Park Avenue Field",
       "location": "Park Avenue, New York",
-      "sports": [4, 1]
+      "sports": [7, 8]
     }
   },
   {
@@ -187,5 +207,182 @@
       "creator": 3,
       "participants": [3]
     }
+  },
+  {
+    "model": "sports.User",
+    "pk": 9,
+    "fields": {
+      "username": "ronnie_osullivan",
+      "first_name": "Ronnie",
+      "last_name": "O'Sullivan",
+      "age": 47
+    }
+  },
+  {
+    "model": "sports.User",
+    "pk": 10,
+    "fields": {
+      "username": "max_verstappen",
+      "first_name": "Max",
+      "last_name": "Verstappen",
+      "age": 26
+    }
+  },
+  {
+    "model": "sports.User",
+    "pk": 11,
+    "fields": {
+      "username": "lewis_hamilton",
+      "first_name": "Lewis",
+      "last_name": "Hamilton",
+      "age": 38
+    }
+  },
+  {
+    "model": "sports.User",
+    "pk": 12,
+    "fields": {
+      "username": "tom_brady",
+      "first_name": "Tom",
+      "last_name": "Brady",
+      "age": 46
+    }
+  },
+  {
+    "model": "sports.User",
+    "pk": 13,
+    "fields": {
+      "username": "michael_jordan",
+      "first_name": "Michael",
+      "last_name": "Jordan",
+      "age": 60
+    }
+  },
+  {
+    "model": "sports.User",
+    "pk": 14,
+    "fields": {
+      "username": "katie_ledecky",
+      "first_name": "Katie",
+      "last_name": "Ledecky",
+      "age": 26
+    }
+  },
+  {
+    "model": "sports.User",
+    "pk": 15,
+    "fields": {
+      "username": "neymar",
+      "first_name": "Neymar",
+      "last_name": "Jr",
+      "age": 31
+    }
+  },
+  {
+    "model": "sports.User",
+    "pk": 16,
+    "fields": {
+      "username": "simone_biles",
+      "first_name": "Simone",
+      "last_name": "Biles",
+      "age": 27
+    }
+  },
+  {
+    "model": "sports.Training",
+    "pk": 5,
+    "fields": {
+      "field": 1,
+      "sport": 1,
+      "datetime": "2024-09-26T10:00:00Z",
+      "creator": 9,
+      "participants": [9, 10, 15]
+    }
+  },
+  {
+    "model": "sports.Training",
+    "pk": 6,
+    "fields": {
+      "field": 2,
+      "sport": 2,
+      "datetime": "2024-09-27T14:00:00Z",
+      "creator": 10,
+      "participants": [10, 11]
+    }
+  },
+  {
+    "model": "sports.Training",
+    "pk": 7,
+    "fields": {
+      "field": 3,
+      "sport": 3,
+      "datetime": "2024-09-28T16:00:00Z",
+      "creator": 12,
+      "participants": [12, 13]
+    }
+  },
+  {
+    "model": "sports.Training",
+    "pk": 8,
+    "fields": {
+      "field": 4,
+      "sport": 4,
+      "datetime": "2024-09-29T09:00:00Z",
+      "creator": 13,
+      "participants": [13, 14]
+    }
+  },
+  {
+    "model": "sports.Training",
+    "pk": 9,
+    "fields": {
+      "field": 5,
+      "sport": 5,
+      "datetime": "2024-09-30T12:00:00Z",
+      "creator": 14,
+      "participants": [14, 15]
+    }
+  },
+  {
+    "model": "sports.Training",
+    "pk": 10,
+    "fields": {
+      "field": 1,
+      "sport": 6,
+      "datetime": "2024-10-01T11:00:00Z",
+      "creator": 15,
+      "participants": [9, 16]
+    }
+  },
+  {
+    "model": "sports.Training",
+    "pk": 11,
+    "fields": {
+      "field": 2,
+      "sport": 7,
+      "datetime": "2024-10-02T13:00:00Z",
+      "creator": 16,
+      "participants": [16, 11]
+    }
+  },
+  {
+    "model": "sports.Training",
+    "pk": 12,
+    "fields": {
+      "field": 3,
+      "sport": 8,
+      "datetime": "2024-10-03T15:00:00Z",
+      "creator": 12,
+      "participants": [12, 14]
+    }
+  },
+  {
+  "model": "sports.Field",
+  "pk": 6,
+  "fields": {
+    "name": "Universial field VDNH",
+    "location": "VDNH, Kyiv",
+    "sports": [1, 2, 3, 5, 6, 7, 8]
   }
+}
 ]

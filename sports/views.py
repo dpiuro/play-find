@@ -21,8 +21,9 @@ class TrainingListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         return (
-            Training.objects.select_related(
-                "field", "sport").prefetch_related("participants").order_by('name')
+            Training.objects.select_related("field", "sport")
+            .prefetch_related("participants")
+            .order_by("datetime")  # Сортування за датою
         )
 
 
@@ -40,6 +41,8 @@ class TrainingCreateView(LoginRequiredMixin, generic.CreateView):
             form.add_error(None, e)
             return self.form_invalid(form)
 
+        training = form.save()  # Зберігаємо тренування
+        training.participants.add(self.request.user)  # Додаємо користувача до учасників
         return super().form_valid(form)
 
 
@@ -67,7 +70,7 @@ class TrainingUpdateView(LoginRequiredMixin, generic.UpdateView):
 class TrainingDeleteView(generic.DeleteView):
     model = Training
     template_name = "training/training_confirm_delete.html"
-    success_url = "/"
+    success_url =  reverse_lazy("training-list")
 
     def dispatch(self, request, *args, **kwargs):
         training = self.get_object()
