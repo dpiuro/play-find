@@ -6,11 +6,14 @@ export PATH="/opt/render/project/python/bin:$PATH"
 # Exit on error
 set -o errexit
 
-# Modify this line as needed for your package manager (pip, poetry, etc.)
+# Установити залежності
 pip install -r requirements.txt
 
-# Convert static asset files
+# Встановити Gunicorn
+pip install gunicorn
+
+# Зібрати статичні файли
 python manage.py collectstatic --no-input
 
-# Apply any outstanding database migrations
+# Виконати міграції
 python manage.py migrate
