@@ -22,8 +22,9 @@ class TrainingListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return (
             Training.objects.select_related(
-                "field", "sport").prefetch_related("participants")
+                "field", "sport").prefetch_related("participants").order_by('name')
         )
+
 
 class TrainingCreateView(LoginRequiredMixin, generic.CreateView):
     model = Training
@@ -95,7 +96,7 @@ class FieldListView(generic.ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        return Field.objects.prefetch_related("sports")
+        return Field.objects.prefetch_related("sports").order_by('name')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -140,6 +141,9 @@ class SportListView(generic.ListView):
     template_name = "sport/sport_list.html"
     context_object_name = "sports"
     paginate_by = 5
+
+    def get_queryset(self):
+        return Sport.objects.order_by('name')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -213,9 +217,9 @@ def toggle_training_subscription(request, pk):
 def search_trainings(request):
     query = request.GET.get("q")
     trainings = (
-        Training.objects.filter(Q(sport__name__icontains=query))
+        Training.objects.filter(Q(sport__name__icontains=query)).order_by('name')
         if query
-        else Training.objects.all()
+        else Training.objects.order_by('name')
     )
     return render(
         request,
