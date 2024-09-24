@@ -8,7 +8,7 @@ from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic import DetailView
 
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, TrainingForm
 from .models import Training, Sport, Field
 
 
@@ -27,7 +27,7 @@ class TrainingListView(LoginRequiredMixin, generic.ListView):
 
 class TrainingCreateView(LoginRequiredMixin, generic.CreateView):
     model = Training
-    fields = ['field', 'sport', 'datetime']
+    form_class = TrainingForm
     template_name = "training/training_form.html"
     success_url = reverse_lazy('training-list')
 
