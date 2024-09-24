@@ -6,6 +6,8 @@ set -o errexit
 # Установити залежності
 pip install -r requirements.txt
 
+python --version
+
 # Збираємо статичні файли
 python manage.py collectstatic --no-input
 
