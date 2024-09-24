@@ -54,7 +54,7 @@ Enjoy using!
 
     ```python
     from django.contrib.auth.models import User
-    user = User.objects.create_user('user', 'testuser@example.com', 'password85795495')
+    user = User.objects.create_user('user', 'user@example.com', 'password85795495')
     user.save()
     exit()
     ```
@@ -73,6 +73,5 @@ Enjoy using!
     ```bash
     python manage.py loaddata data.json
     ```
-8. Enjoy using!
 
 ![DB structure](static/assets/images/db_structure.png)

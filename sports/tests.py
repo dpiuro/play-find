@@ -8,15 +8,27 @@ User = get_user_model()
 
 class TrainingTestCase(TestCase):
 
+    def __init__(self, methodName: str = "runTest"):
+        super().__init__(methodName)
+        self.training = None
+
     def setUp(self):
         self.user = User.objects.create_user(
-            username="testuser", email="test@example.com", password="password123"
+            username="testuser",
+            email="test@example.com",
+            password="password123"
         )
         self.sport = Sport.objects.create(name="Football")
-        self.field = Field.objects.create(name="Main Field", location="Center")
+        self.field = Field.objects.create(
+            name="Main Field",
+            location="Center"
+        )
         self.field.sports.add(self.sport)
         self.training = Training.objects.create(
-            field=self.field, sport=self.sport, datetime="2024-09-25 10:00"
+            field=self.field,
+            sport=self.sport,
+            datetime="2024-09-25 10:00",
+            creator=self.user
         )
         self.client.login(username="testuser", password="password123")
 
@@ -26,34 +38,62 @@ class TrainingTestCase(TestCase):
             "sport": self.sport.id,
             "datetime": "2024-09-25 12:00",
         }
-        response = self.client.post(reverse("training-create"), data=form_data)
+        response = self.client.post(
+            reverse("training-create"),
+            data=form_data
+        )
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(Training.objects.filter(datetime="2024-09-25 12:00").exists())
+        self.assertTrue(Training.objects.filter(
+            datetime="2024-09-25 12:00"
+        ).exists())
+        training = Training.objects.get(
+            datetime="2024-09-25 12:00"
+        )
+        self.assertEqual(training.creator, self.user)
 
     def test_update_training_valid_data(self):
+        self.training = Training.objects.create(
+            field=self.field,
+            sport=self.sport,
+            datetime="2024-09-25 10:00",
+            creator=self.user
+        )
         form_data = {
             "field": self.field.id,
             "sport": self.sport.id,
             "datetime": "2024-09-26 10:00",
         }
         response = self.client.post(
-            reverse("training-update", kwargs={"pk": self.training.pk}), data=form_data
+            reverse(
+                "training-update",
+                kwargs={"pk": self.training.pk}),
+            data=form_data
         )
         self.training.refresh_from_db()
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
-            self.training.datetime.strftime("%Y-%m-%d %H:%M"), "2024-09-26 10:00"
+            self.training.datetime.strftime(
+                "%Y-%m-%d %H:%M"),
+            "2024-09-26 10:00"
         )
 
     def test_delete_training(self):
+        training = Training.objects.create(
+            field=self.field,
+            sport=self.sport,
+            datetime="2024-09-25 10:00",
+            creator=self.user
+        )
         response = self.client.post(
-            reverse("training-delete", kwargs={"pk": self.training.pk})
+            reverse("training-delete", kwargs={"pk": training.pk})
         )
         self.assertEqual(response.status_code, 302)
-        self.assertFalse(Training.objects.filter(id=self.training.id).exists())
+        self.assertFalse(Training.objects.filter(id=training.id).exists())
 
     def test_search_training(self):
-        response = self.client.get(reverse("training-list") + "?q=Football")
+        response = self.client.get(
+            reverse("training-list") + "?q=Football"
+        )
         self.assertContains(response, "Football")
         self.assertContains(response, "Main Field")
 
@@ -81,15 +121,93 @@ class SportModelTestCase(TestCase):
             Sport.objects.create(name="Volleyball")
 
 
+
 class FieldCreationTest(TestCase):
     def setUp(self):
         self.sport = Sport.objects.create(name="Basketball")
 
     def test_create_field(self):
-        field = Field.objects.create(name="Basketball Court", location="Downtown")
+        field = Field.objects.create(
+            name="Basketball Court",
+            location="Downtown"
+        )
         field.sports.add(self.sport)
 
         self.assertEqual(Field.objects.count(), 1)
         self.assertEqual(field.name, "Basketball Court")
         self.assertEqual(field.location, "Downtown")
         self.assertIn(self.sport, field.sports.all())
+
+
+
+class FieldSearchTest(TestCase):
+    def setUp(self):
+        self.sport = Sport.objects.create(name="Soccer")
+        self.field = Field.objects.create(
+            name="Soccer Field",
+            location="West Park"
+        )
+        self.field.sports.add(self.sport)
+
+    def test_search_field(self):
+        response = self.client.get(reverse("field-list") + "?q=Soccer")
+        self.assertContains(response, "Soccer Field")
+        self.assertContains(response, "West Park")
+
+
+class TrainingOverlapTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="testuser",
+            email="test@example.com",
+            password="password123"
+        )
+        self.sport = Sport.objects.create(name="Football")
+        self.field = Field.objects.create(
+            name="Main Field",
+            location="Center"
+        )
+        self.field.sports.add(self.sport)
+        self.client.login(username="testuser", password="password123")
+        self.training = Training.objects.create(
+            field=self.field,
+            sport=self.sport,
+            datetime="2024-09-25 10:00",
+            creator=self.user
+        )
+
+    def test_overlapping_training(self):
+        form_data = {
+            "field": self.field.id,
+            "sport": self.sport.id,
+            "datetime": "2024-09-25 10:00",
+        }
+        response = self.client.post(
+            reverse("training-create"), data=form_data
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(
+            response,
+            'form',
+            None,
+            "There is already a training "
+            "scheduled on this field at the same time."
+        )
+
+
+class SportUpdateTest(TestCase):
+    def setUp(self):
+        self.sport = Sport.objects.create(name="Tennis")
+
+    def test_update_sport(self):
+        self.sport.name = "Updated Tennis"
+        self.sport.save()
+        updated_sport = Sport.objects.get(pk=self.sport.pk)
+        self.assertEqual(updated_sport.name, "Updated Tennis")
+
+
+class SportCreationTest(TestCase):
+    def test_create_sport(self):
+        sport = Sport.objects.create(name="Tennis")
+        self.assertEqual(Sport.objects.count(), 1)
+        self.assertEqual(sport.name, "Tennis")
