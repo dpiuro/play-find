@@ -75,4 +75,4 @@ Enjoy using!
     ```
 8. Enjoy using!
 
-![DB structure]((./static/assets/images/db_structure.png))
+![DB structure](static/assets/images/db_structure.png)
