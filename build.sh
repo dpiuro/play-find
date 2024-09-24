@@ -3,13 +3,15 @@
 # Exit on error
 set -o errexit
 
-# Установити залежності
 pip install -r requirements.txt
 
-python --version
 
-# Збираємо статичні файли
+echo "Шлях до Python:"
+which python
+
+echo "Змінна PATH:"
+echo $PATH
+
 python manage.py collectstatic --no-input
 
-# Виконуємо міграції
 python manage.py migrate
