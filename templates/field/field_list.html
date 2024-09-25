@@ -15,7 +15,9 @@
         <tr>
           <th>Field Name</th>
           <th>Location</th>
-          <th>Actions</th>
+          {% if user.is_staff %}
+            <th>Actions</th>
+          {% endif %}
         </tr>
       </thead>
       <tbody>
