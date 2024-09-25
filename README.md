@@ -4,8 +4,17 @@ Welcome to Play&Find, the place where you can find teammates and friends!
 
 Play&Find is a platform that helps users find sports fields and organize games.
 Users can create, join, and manage sports training sessions.
-The app ensures that fields support the chosen sport and prevents scheduling conflicts with existing trainings.
+
 Enjoy using!
+
+https://play-find.onrender.com/
+
+
+You can use the test user provided below, or feel free to register on your own.
+
+```username: username```
+
+```password: password589243```
 
 
 ## Setup Instructions:
