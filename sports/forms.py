@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .models import User, Training
+
+from sports.models import User, Training, Sport, Field
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -15,15 +16,24 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class TrainingForm(forms.ModelForm):
+    field = forms.ModelChoiceField(
+        queryset=Field.objects.all(),
+        widget=forms.Select(attrs={"class": "form-control"})
+    )
+    sport = forms.ModelChoiceField(
+        queryset=Sport.objects.all(),
+        widget=forms.Select(attrs={"class": "form-control"})
+    )
+
     class Meta:
         model = Training
-        fields = ['field', 'sport', 'datetime']
+        fields = ["field", "sport", "datetime"]
         widgets = {
-            'datetime': forms.DateTimeInput(
+            "datetime": forms.DateTimeInput(
                 attrs={
-                    'type': 'datetime-local',
-                    'placeholder': 'YYYY-MM-DD HH:MM',
-                    'class': 'form-control',
+                    "type": "datetime-local",
+                    "placeholder": "YYYY-MM-DD HH:MM",
+                    "class": "form-control",
                 }
             ),
         }

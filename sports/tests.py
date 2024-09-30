@@ -1,7 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from .models import Training, Sport, Field
+
+from sports.models import Training, Sport, Field
+
 
 User = get_user_model()
 
@@ -19,16 +21,16 @@ class TrainingTestCase(TestCase):
             password="password123"
         )
         self.sport = Sport.objects.create(name="Football")
-        self.field = Field.objects.create(
-            name="Main Field",
-            location="Center"
-        )
+        self.field = (Field.objects.create
+                      (name="Main Field",
+                       location="Center")
+                      )
         self.field.sports.add(self.sport)
         self.training = Training.objects.create(
             field=self.field,
             sport=self.sport,
             datetime="2024-09-25 10:00",
-            creator=self.user
+            creator=self.user,
         )
         self.client.login(username="testuser", password="password123")
 
@@ -43,12 +45,10 @@ class TrainingTestCase(TestCase):
             data=form_data
         )
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(Training.objects.filter(
-            datetime="2024-09-25 12:00"
-        ).exists())
-        training = Training.objects.get(
-            datetime="2024-09-25 12:00"
+        self.assertTrue(
+            Training.objects.filter(datetime="2024-09-25 12:00").exists()
         )
+        training = Training.objects.get(datetime="2024-09-25 12:00")
         self.assertEqual(training.creator, self.user)
 
     def test_update_training_valid_data(self):
@@ -56,7 +56,7 @@ class TrainingTestCase(TestCase):
             field=self.field,
             sport=self.sport,
             datetime="2024-09-25 10:00",
-            creator=self.user
+            creator=self.user,
         )
         form_data = {
             "field": self.field.id,
@@ -64,16 +64,13 @@ class TrainingTestCase(TestCase):
             "datetime": "2024-09-26 10:00",
         }
         response = self.client.post(
-            reverse(
-                "training-update",
-                kwargs={"pk": self.training.pk}),
+            reverse("training-update", kwargs={"pk": self.training.pk}),
             data=form_data
         )
         self.training.refresh_from_db()
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
-            self.training.datetime.strftime(
-                "%Y-%m-%d %H:%M"),
+            self.training.datetime.strftime("%Y-%m-%d %H:%M"),
             "2024-09-26 10:00"
         )
 
@@ -82,7 +79,7 @@ class TrainingTestCase(TestCase):
             field=self.field,
             sport=self.sport,
             datetime="2024-09-25 10:00",
-            creator=self.user
+            creator=self.user,
         )
         response = self.client.post(
             reverse("training-delete", kwargs={"pk": training.pk})
@@ -91,9 +88,7 @@ class TrainingTestCase(TestCase):
         self.assertFalse(Training.objects.filter(id=training.id).exists())
 
     def test_search_training(self):
-        response = self.client.get(
-            reverse("training-list") + "?q=Football"
-        )
+        response = self.client.get(reverse("training-list") + "?q=Football")
         self.assertContains(response, "Football")
         self.assertContains(response, "Main Field")
 
@@ -121,23 +116,21 @@ class SportModelTestCase(TestCase):
             Sport.objects.create(name="Volleyball")
 
 
-
 class FieldCreationTest(TestCase):
     def setUp(self):
         self.sport = Sport.objects.create(name="Basketball")
 
     def test_create_field(self):
-        field = Field.objects.create(
-            name="Basketball Court",
-            location="Downtown"
-        )
+        field = (Field.objects.create
+                 (name="Basketball Court",
+                  location="Downtown")
+                 )
         field.sports.add(self.sport)
 
         self.assertEqual(Field.objects.count(), 1)
         self.assertEqual(field.name, "Basketball Court")
         self.assertEqual(field.location, "Downtown")
         self.assertIn(self.sport, field.sports.all())
-
 
 
 class FieldSearchTest(TestCase):
@@ -173,7 +166,7 @@ class TrainingOverlapTest(TestCase):
             field=self.field,
             sport=self.sport,
             datetime="2024-09-25 10:00",
-            creator=self.user
+            creator=self.user,
         )
 
     def test_overlapping_training(self):
@@ -183,15 +176,16 @@ class TrainingOverlapTest(TestCase):
             "datetime": "2024-09-25 10:00",
         }
         response = self.client.post(
-            reverse("training-create"), data=form_data
+            reverse("training-create"),
+            data=form_data
         )
         self.assertEqual(response.status_code, 200)
         self.assertFormError(
             response,
-            'form',
+            "form",
             None,
             "There is already a training "
-            "scheduled on this field at the same time."
+            "scheduled on this field at the same time.",
         )
 
 

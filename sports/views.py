@@ -1,15 +1,15 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic import DetailView
 
-from .forms import CustomUserCreationForm, TrainingForm
-from .models import Training, Sport, Field
+from sports.forms import CustomUserCreationForm, TrainingForm
+from sports.mixins import UserPermissionMixin, UserStatusMixin
+from sports.models import Training, Sport, Field
 
 
 class TrainingListView(LoginRequiredMixin, generic.ListView):
@@ -23,7 +23,7 @@ class TrainingListView(LoginRequiredMixin, generic.ListView):
         return (
             Training.objects.select_related("field", "sport")
             .prefetch_related("participants")
-            .order_by("datetime")  # Сортування за датою
+            .order_by("datetime")
         )
 
 
@@ -31,7 +31,7 @@ class TrainingCreateView(LoginRequiredMixin, generic.CreateView):
     model = Training
     form_class = TrainingForm
     template_name = "training/training_form.html"
-    success_url = reverse_lazy('training-list')
+    success_url = reverse_lazy("training-list")
 
     def form_valid(self, form):
         form.instance.creator = self.request.user
@@ -41,49 +41,31 @@ class TrainingCreateView(LoginRequiredMixin, generic.CreateView):
             form.add_error(None, e)
             return self.form_invalid(form)
 
-        training = form.save()  # Зберігаємо тренування
-        training.participants.add(self.request.user)  # Додаємо користувача до учасників
+        training = form.save()
+        training.participants.add(self.request.user)
         return super().form_valid(form)
 
 
-class TrainingUpdateView(LoginRequiredMixin, generic.UpdateView):
+class TrainingUpdateView(
+    LoginRequiredMixin,
+    UserPermissionMixin,
+    generic.UpdateView
+):
     model = Training
     fields = ["field", "sport", "datetime"]
     template_name = "training/training_form.html"
     success_url = "/"
     login_url = "login"
 
-    def dispatch(self, request, *args, **kwargs):
-        training = self.get_object()
 
-        if not request.user.is_staff and training.creator != request.user:
-            messages.error(
-                request, "You do not have permission to edit this training."
-            )
-            return redirect(
-                reverse("training-list")
-            )
-
-        return super().dispatch(request, *args, **kwargs)
-
-
-class TrainingDeleteView(generic.DeleteView):
+class TrainingDeleteView(
+    LoginRequiredMixin,
+    UserPermissionMixin,
+    generic.DeleteView
+):
     model = Training
     template_name = "training/training_confirm_delete.html"
-    success_url =  reverse_lazy("training-list")
-
-    def dispatch(self, request, *args, **kwargs):
-        training = self.get_object()
-
-        if not request.user.is_staff and training.creator != request.user:
-            messages.error(
-                request, "You do not have permission to delete this training."
-            )
-            return redirect(
-                reverse("training-list")
-            )
-
-        return super().dispatch(request, *args, **kwargs)
+    success_url = reverse_lazy("training-list")
 
 
 class TrainingDetailView(DetailView):
@@ -92,22 +74,14 @@ class TrainingDetailView(DetailView):
     context_object_name = "training"
 
 
-class FieldListView(generic.ListView):
+class FieldListView(UserStatusMixin, generic.ListView):
     model = Field
     template_name = "field/field_list.html"
     context_object_name = "fields"
     paginate_by = 5
 
     def get_queryset(self):
-        return Field.objects.prefetch_related("sports").order_by('name')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["is_admin"] = (
-            self.request.user.groups.filter(name="Admins").exists()
-        )
-        context["is_staff"] = self.request.user.is_staff
-        return context
+        return Field.objects.prefetch_related("sports").order_by("name")
 
 
 class FieldCreateView(generic.CreateView):
@@ -139,22 +113,14 @@ class FieldDetailView(generic.DetailView):
         return Field.objects.prefetch_related("sports")
 
 
-class SportListView(generic.ListView):
+class SportListView(UserStatusMixin, generic.ListView):
     model = Sport
     template_name = "sport/sport_list.html"
     context_object_name = "sports"
     paginate_by = 5
 
     def get_queryset(self):
-        return Sport.objects.order_by('name')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["is_admin"] = (
-            self.request.user.groups.filter(name="Admins").exists()
-        )
-        context["is_staff"] = self.request.user.is_staff
-        return context
+        return Sport.objects.order_by("name")
 
 
 class SportCreateView(generic.CreateView):
@@ -206,7 +172,9 @@ def home_view(request):
 
 @login_required
 def toggle_training_subscription(request, pk):
-    training = get_object_or_404(Training, pk=pk)
+    training = get_object_or_404(
+        Training.objects.prefetch_related("participants"), pk=pk
+    )
     user = request.user
 
     if user in training.participants.all():
@@ -220,9 +188,11 @@ def toggle_training_subscription(request, pk):
 def search_trainings(request):
     query = request.GET.get("q")
     trainings = (
-        Training.objects.filter(Q(sport__name__icontains=query)).order_by('name')
+        Training.objects.select_related("sport")
+        .filter(Q(sport__name__icontains=query))
+        .order_by("name")
         if query
-        else Training.objects.order_by('name')
+        else Training.objects.select_related("sport").order_by("name")
     )
     return render(
         request,

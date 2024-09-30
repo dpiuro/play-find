@@ -1,4 +1,5 @@
 from django.urls import path
+
 from sports import views
 from sports.views import (
     toggle_training_subscription,
@@ -54,10 +55,10 @@ urlpatterns = [
         views.FieldDeleteView.as_view(),
         name="field-delete"
     ),
-    path(
-        "sport/",
-        views.SportListView.as_view(),
-        name="sport-list"),
+    path("sport/",
+         views.SportListView.as_view(),
+         name="sport-list"
+         ),
     path(
         "sport/create/",
         views.SportCreateView.as_view(),
@@ -75,9 +76,9 @@ urlpatterns = [
     ),
     path(
         "search/",
-         views.search_trainings,
-         name="training-search"
-         ),
+        views.search_trainings,
+        name="training-search"
+    ),
     path(
         "register/",
         views.register,
