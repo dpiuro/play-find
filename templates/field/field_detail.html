@@ -1,0 +1,22 @@
+{% extends 'layouts/base_presentation.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">{{ field.name }}</h1>
+
+    <p><strong>Location:</strong> {{ field.location }}</p>
+
+    <h3>Supported Sports:</h3>
+    {% if field.sports.all %}
+      <ul class="list-group mb-4" style="max-width: 400px;">
+        {% for sport in field.sports.all %}
+          <li class="list-group-item" style="width: fit-content; text-align: left;">{{ sport.name }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No sports available for this field.</p>
+    {% endif %}
+
+    <a href="{% url 'field-list' %}" class="btn btn-primary mt-3">Back to Fields</a>
+</div>
+{% endblock %}

@@ -1,0 +1,107 @@
+from django.urls import path
+
+from sports import views
+from sports.views import (
+    toggle_training_subscription,
+    CustomUserCreationView,
+    SportDetailView,
+    home_view,
+)
+
+urlpatterns = [
+    path("", home_view, name="home"),
+    path(
+        "trainings/",
+        views.TrainingListView.as_view(),
+        name="training-list"
+    ),
+    path(
+        "trainings/create/",
+        views.TrainingCreateView.as_view(),
+        name="training-create"
+    ),
+    path(
+        "trainings/<int:pk>/update/",
+        views.TrainingUpdateView.as_view(),
+        name="training-update",
+    ),
+    path(
+        "trainings/<int:pk>/delete/",
+        views.TrainingDeleteView.as_view(),
+        name="training-delete",
+    ),
+    path(
+        "trainings/<int:pk>/subscribe/",
+        toggle_training_subscription,
+        name="training-subscribe",
+    ),
+    path(
+        "fields/",
+        views.FieldListView.as_view(),
+        name="field-list"
+    ),
+    path(
+        "fields/create/",
+        views.FieldCreateView.as_view(),
+        name="field-create"
+    ),
+    path(
+        "fields/<int:pk>/update/",
+        views.FieldUpdateView.as_view(),
+        name="field-update"
+    ),
+    path(
+        "fields/<int:pk>/delete/",
+        views.FieldDeleteView.as_view(),
+        name="field-delete"
+    ),
+    path("sport/",
+         views.SportListView.as_view(),
+         name="sport-list"
+         ),
+    path(
+        "sport/create/",
+        views.SportCreateView.as_view(),
+        name="sport-create"
+    ),
+    path(
+        "sport/<int:pk>/update/",
+        views.SportUpdateView.as_view(),
+        name="sport-update"
+    ),
+    path(
+        "sport/<int:pk>/delete/",
+        views.SportDeleteView.as_view(),
+        name="sport-delete"
+    ),
+    path(
+        "search/",
+        views.search_trainings,
+        name="training-search"
+    ),
+    path(
+        "register/",
+        views.register,
+        name="register"
+    ),
+    path(
+        "signup/",
+        CustomUserCreationView.as_view(),
+        name="signup"
+    ),
+    path(
+        "trainings/<int:pk>/",
+        views.TrainingDetailView.as_view(),
+        name="training-detail",
+    ),
+    path(
+        "fields/<int:pk>/",
+        views.FieldDetailView.as_view(),
+        name="field-detail"
+    ),
+    path(
+        "sport/<int:pk>/",
+        SportDetailView.as_view(),
+        name="sport-detail"
+    ),
+]

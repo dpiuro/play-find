@@ -1,0 +1,8 @@
+<h2>Search Results</h2>
+<ul>
+    {% for training in trainings %}
+        <li>{{ training.sport.name }} at {{ training.field.name }} on {{ training.datetime }}</li>
+    {% empty %}
+        <li>No trainings found for this sport.</li>
+    {% endfor %}
+</ul>

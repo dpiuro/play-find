@@ -1,0 +1,54 @@
+/* Загальні стилі для всього сайту */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa; /* Легкий сірий фон */
+    margin: 0;
+    padding: 0;
+}
+
+/* Стилі для заголовків */
+h2 {
+    color: #007bff; /* Синій заголовок */
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Стилі для списків */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd; /* Сіра лінія між елементами */
+}
+
+li a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+li a:hover {
+    text-decoration: underline;
+}
+
+/* Стилі для кнопок */
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Стилі для заголовку учасників */
+strong {
+    display: block;
+    margin-top: 10px;
+}

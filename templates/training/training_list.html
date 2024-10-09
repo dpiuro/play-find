@@ -1,0 +1,72 @@
+{% extends 'layouts/base_presentation.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <h1 class="mb-4">
+      Training List
+      <a href="{% url 'training-create' %}" class="btn btn-primary">Create Training</a>
+    </h1>
+
+  <form method="GET" action="{% url 'training-search' %}" class="d-flex mb-3">
+  <input type="text" name="q" placeholder="Search by sport" value="{{ request.GET.q }}">
+  <button type="submit" class="btn btn-primary small-btn">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+</form>
+
+    {% if trainings %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Sport</th>
+          <th>Field</th>
+          <th>Date & Time</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for training in trainings %}
+        <tr>
+          <td><a href="{% url 'training-detail' training.pk %}">{{ training.sport.name }}</a></td>
+          <td>{{ training.field.name }}</td>
+          <td>{{ training.datetime }}</td>
+          <td>
+            <a href="{% url 'training-update' training.pk %}" class="btn btn-group-lg">Edit</a>
+            <a href="{% url 'training-delete' training.pk %}" class="btn btn-primary">Delete</a>
+
+            <form method="post" action="{% url 'training-subscribe' training.pk %}" style="display: inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-outline-primary btn-sm">
+                {% if user in training.participants.all %}
+                  Unsubscribe
+                {% else %}
+                  Subscribe
+                {% endif %}
+              </button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-center mt-4">
+      {% include 'includes/pagination.html' %}
+    </div>
+
+    {% else %}
+      <p>No trainings available.</p>
+    {% endif %}
+</div>
+{% endblock %}
