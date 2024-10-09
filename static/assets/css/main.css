@@ -6,17 +6,15 @@ html, body {
   flex-direction: column;
 }
 
-/* Контейнер для основного контенту */
 .page-header {
-  flex: 1; /* Займає весь доступний простір */
-  min-height: calc(100vh - 100px); /* Висота екрану мінус висота футера */
+  flex: 1; /
+  min-height: calc(100vh - 100px);
   background-size: cover;
   background-position: center;
 }
 
-/* Футер */
 .footer {
-  height: 100px; /* Фіксована висота футера */
+  height: 100px;
   background-color: #6f42c1;
   color: white;
   text-align: center;
@@ -27,5 +25,5 @@ html, body {
 }
 
 .text-custom-color {
-    color: #C77DFF; /* Світлий фіолетовий */
+    color: #C77DFF; /
 }

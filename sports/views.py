@@ -81,27 +81,27 @@ class FieldListView(UserStatusMixin, generic.ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        return Field.objects.prefetch_related("sports").order_by("name")
+        return Field.objects.order_by("name")
 
 
 class FieldCreateView(generic.CreateView):
     model = Field
     fields = ["name", "location", "sports"]
     template_name = "field/field_form.html"
-    success_url = "/fields/"
+    success_url = reverse_lazy("field_list")
 
 
 class FieldUpdateView(generic.UpdateView):
     model = Field
     fields = ["name", "location", "sports"]
     template_name = "field/field_form.html"
-    success_url = "/fields/"
+    success_url = reverse_lazy("field_list")
 
 
 class FieldDeleteView(generic.DeleteView):
     model = Field
     template_name = "field/field_confirm_delete.html"
-    success_url = "/fields/"
+    success_url = reverse_lazy("field_list")
 
 
 class FieldDetailView(generic.DetailView):
@@ -190,9 +190,9 @@ def search_trainings(request):
     trainings = (
         Training.objects.select_related("sport")
         .filter(Q(sport__name__icontains=query))
-        .order_by("name")
+        .order_by("sport")
         if query
-        else Training.objects.select_related("sport").order_by("name")
+        else Training.objects.select_related("sport").order_by("sport")
     )
     return render(
         request,

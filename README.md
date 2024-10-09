@@ -84,3 +84,5 @@ You can use the test user provided below, or feel free to register on your own.
     ```
 
 ![DB structure](static/assets/images/db_structure.png)
+
+![Home](static/assets/images/home_page.png)
