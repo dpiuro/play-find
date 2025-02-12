@@ -1,0 +1,12 @@
+{% extends 'layouts/base_presentation.html' %}
+
+{% block content %}
+  <h2>Delete Sport</h2>
+  <p>Are you sure you want to delete {{ object.name }}?</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="{% url 'sport-list' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+{% endblock %}

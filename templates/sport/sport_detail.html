@@ -1,0 +1,13 @@
+{% extends 'layouts/base_presentation.html' %}
+
+{% block content %}
+<h1>{{ sport.name }}</h1>
+<h2>Fields where you can play this sport:</h2>
+<ul>
+    {% for field in fields %}
+        <li>{{ field.name }} – {{ field.location }}</li>
+    {% empty %}
+        <li>No fields support this sport yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

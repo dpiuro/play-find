@@ -1,0 +1,49 @@
+{% extends 'layouts/base_presentation.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Field List</h1>
+
+    {% if is_staff %}
+        <a href="{% url 'field-create' %}" class="btn btn-primary mt-4">Create New Field</a>
+    {% endif %}
+
+
+    {% if fields %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Field Name</th>
+          <th>Location</th>
+          {% if user.is_staff %}
+            <th>Actions</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for field in fields %}
+        <tr>
+          <td><a href="{% url 'field-detail' field.pk %}">{{ field.name }}</a></td>
+          <td>{{ field.location }}</td>
+          <td>
+            {% if is_staff %}
+              <a href="{% url 'field-update' field.pk %}" class="btn btn-group-lg">Edit</a>
+              <a href="{% url 'field-delete' field.pk %}" class="btn btn-primary">Delete</a>
+            {% endif %}
+
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-center mt-4">
+      {% include 'includes/pagination.html' %}
+    </div>
+
+    {% else %}
+    <p>No fields available.</p>
+    {% endif %}
+
+</div>
+{% endblock %}
